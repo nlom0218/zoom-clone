@@ -4,7 +4,8 @@ import { Server } from "socket.io";
 import cors from "cors";
 import config from "config";
 import http from "http";
-import WebSocket from "ws";
+import logger from "./utils/logger";
+import { version } from "../package.json";
 
 const port = config.get<number>("port");
 const host = config.get<string>("host");
@@ -21,11 +22,11 @@ const io = new Server(httpSever, {
   },
 });
 
-app.get("/", (_, res) => res.send(`Server is up`));
+app.get("/", (_, res) =>
+  res.send(`Server is up and running version ${version}`)
+);
 
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
-
-server.listen(port, host, () => {
-  console.log(`Server is listening`);
+httpSever.listen(port, host, () => {
+  console.log(`🚀 Server version ${version} is listening 🚀`);
+  console.log(`http://${host}:${port}`);
 });
