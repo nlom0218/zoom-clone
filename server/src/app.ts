@@ -3,6 +3,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import config from "config";
+import http from "http";
+import WebSocket from "ws";
 
 const port = config.get<number>("port");
 const host = config.get<string>("host");
@@ -21,6 +23,9 @@ const io = new Server(httpSever, {
 
 app.get("/", (_, res) => res.send(`Server is up`));
 
-httpSever.listen(port, host, () => {
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+server.listen(port, host, () => {
   console.log(`Server is listening`);
 });
