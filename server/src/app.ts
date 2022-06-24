@@ -6,6 +6,7 @@ import config from "config";
 import http from "http";
 import logger from "./utils/logger";
 import { version } from "../package.json";
+import socket from "./socket";
 
 const port = config.get<number>("port");
 const host = config.get<string>("host");
@@ -29,4 +30,6 @@ app.get("/", (_, res) =>
 httpSever.listen(port, host, () => {
   console.log(`🚀 Server version ${version} is listening 🚀`);
   console.log(`http://${host}:${port}`);
+
+  socket({ io });
 });
