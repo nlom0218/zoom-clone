@@ -10,7 +10,9 @@ function MessagesContainer() {
   const { register, getValues, handleSubmit } = useForm<IForm>({
     mode: "onChange",
   });
-  const { socket, messages, roomId, username, setMessages } = useSockets();
+  const { socket, messages, roomId, username, setMessages, roomname } =
+    useSockets();
+
   if (!roomId) {
     return <div />;
   }
@@ -44,6 +46,7 @@ function MessagesContainer() {
 
   return (
     <div>
+      <h3>Welcome {roomname}</h3>
       {messages?.map(({ message }, index) => {
         return <p key={index}>{message}</p>;
       })}

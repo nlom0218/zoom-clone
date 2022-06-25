@@ -9,23 +9,24 @@ interface IForm {
 function RoomsContainer() {
   const { register, getValues, setValue } = useForm<IForm>();
   const { socket, roomId, rooms } = useSockets();
-  console.log(rooms);
 
   const handleCreateRoom = () => {
     // get the room name
-    const roomName = getValues("roomname");
-    if (roomName === "") return;
+    const roomname = getValues("roomname");
+    if (roomname === "") return;
 
     // emit room created event
-    socket.emit(EVENTS.CLIENT.CREATE_ROOM, { roomName });
+    // emit 메서드의 arg에는 fd에서 실행될 함수를 넣을 넣을 수 있다. 단, 마지막 arg이여야 한다.
+    // 이때 bd에서는 해당 함수를 실행할 권한을 부여한다.
+    socket.emit(EVENTS.CLIENT.CREATE_ROOM, { roomname });
 
     // set room name input ot empty string
     setValue("roomname", "");
   };
 
-  function handleJoinRoom(key: string) {
+  function handleJoinRoom(key: string, roomname: string) {
     if (key === roomId) return;
-    socket.emit(EVENTS.CLIENT.JOIN_ROOM, key);
+    socket.emit(EVENTS.CLIENT.JOIN_ROOM, { key, roomname });
   }
 
   return (
@@ -40,7 +41,7 @@ function RoomsContainer() {
             <button
               disabled={key === roomId}
               title={`Join ${rooms[key].name}`}
-              onClick={() => handleJoinRoom(key)}
+              onClick={() => handleJoinRoom(key, rooms[key].name)}
             >
               {rooms[key].name}
             </button>
