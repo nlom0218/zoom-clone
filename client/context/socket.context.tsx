@@ -2,8 +2,11 @@ import { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import { SOCKET_URL } from "../config/default";
 import EVENTS from "../config/events";
+import { saveMessage } from "../utils/local";
 
-export type IMessage = { message: string; time: string; username: string }[];
+export type IMessage =
+  | { message: string; time: string; username: string; messageId: string }[]
+  | [];
 
 interface Context {
   socket: Socket;
@@ -49,23 +52,32 @@ function SocketsProvider(props: any) {
     setMessages([]);
   });
 
-  socket.on(EVENTS.SERVER.ROOMS_MESSAGE, ({ message, username, time }) => {
-    if (!document.hasFocus()) {
-      document.title = "New message...";
+  socket.on(
+    EVENTS.SERVER.ROOMS_MESSAGE,
+    ({ message, username, time, messageId }) => {
+      if (!document.hasFocus()) {
+        document.title = "New message...";
+      }
+      saveMessage(message, username, time, roomId, messageId);
+      setMessages([
+        ...messages,
+        {
+          message,
+          username,
+          time,
+          messageId,
+        },
+      ]);
     }
-    setMessages([
-      ...messages,
-      {
-        message,
-        username,
-        time,
-      },
-    ]);
-  });
+  );
 
   socket.on(EVENTS.SERVER.WELCOME_MESSAGE, ({ username }) => {
     //   디자인 작업할 때 알람 메시지로 만들기
     console.log(`${username}님이 입장함`);
+  });
+
+  socket.on(EVENTS.SERVER.RESET_ROOM, (parsMessages) => {
+    setMessages(parsMessages);
   });
 
   useEffect(() => {

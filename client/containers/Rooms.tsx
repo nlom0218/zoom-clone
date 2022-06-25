@@ -13,6 +13,7 @@ function RoomsContainer() {
 
   const handleCreateRoom = (data: { roomname: string }) => {
     const { roomname } = data;
+
     // get the room name
     if (roomname === "") return;
 
@@ -34,7 +35,12 @@ function RoomsContainer() {
 
   function handleJoinRoom(key: string, roomname: string) {
     if (key === roomId) return;
-    socket.emit(EVENTS.CLIENT.JOIN_ROOM, { key, roomname, username });
+    socket.emit(EVENTS.CLIENT.JOIN_ROOM, {
+      key,
+      roomname,
+      username,
+      enter: true,
+    });
     // 로컬에 현재 접속 중인 room정보 저장
     enterRoom(key, roomname);
   }

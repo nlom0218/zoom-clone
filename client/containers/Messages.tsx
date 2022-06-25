@@ -1,6 +1,9 @@
+import { time } from "console";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import EVENTS from "../config/events";
 import { IMessage, useSockets } from "../context/socket.context";
+import { saveMessage } from "../utils/local";
 
 interface IForm {
   message: string;
@@ -13,37 +16,52 @@ function MessagesContainer() {
   const { socket, messages, roomId, username, setMessages, roomname } =
     useSockets();
 
-  if (!roomId) {
-    return <div />;
-  }
-
-  const date = new Date();
-
   const handleSendMessage = (data: { message: string }) => {
     const { message } = data;
-    socket.emit(EVENTS.CLIENT.SEND_ROOM_MESSAGE, { roomId, message, username });
-    setMessages((prev: IMessage) => {
-      if (prev.length === 0) {
-        return [
-          {
-            username,
-            message,
-            time: `${date.getHours()}:${date.getMinutes()}`,
-          },
-        ];
-      } else {
-        return [
-          ...prev,
-          {
-            username,
-            message,
-            time: `${date.getHours()}:${date.getMinutes()}`,
-          },
-        ];
+    socket.emit(
+      EVENTS.CLIENT.SEND_ROOM_MESSAGE,
+      { roomId, message, username },
+      (time: string, messageId: string) => {
+        saveMessage(message, username, time, roomId, messageId);
+        setMessages((prev: IMessage) => {
+          if (prev.length === 0) {
+            return [
+              {
+                username,
+                message,
+                time: time,
+                messageId,
+              },
+            ];
+          } else {
+            return [
+              ...prev,
+              {
+                username,
+                message,
+                time: time,
+                messageId,
+              },
+            ];
+          }
+        });
       }
-    });
+    );
     setValue("message", "");
   };
+
+  useEffect(() => {
+    const curRoom = localStorage.getItem("curRoom");
+
+    if (!curRoom) return;
+
+    const curRoomId = JSON.parse(curRoom).roomId;
+    const localMessages = localStorage.getItem(curRoomId);
+    if (!localMessages) return;
+
+    const parseMessages = JSON.parse(localMessages);
+    socket.emit(EVENTS.CLIENT.RESET_ROOM, parseMessages, curRoomId);
+  }, []);
 
   return (
     <div>

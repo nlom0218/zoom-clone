@@ -7,12 +7,14 @@ const EVENTS = {
     CREATE_ROOM: "CREATE_ROOM",
     SEND_ROOM_MESSAGE: "SEND_ROOM_MESSAGE",
     JOIN_ROOM: "JOIN_ROOM",
+    RESET_ROOM: "RESET_ROOM",
   },
   SERVER: {
     ROOMS: "ROOMS",
     JOINED_ROOM: "JOINED_ROOM",
     ROOMS_MESSAGE: "ROOMS_MESSAGE",
     WELCOME_MESSAGE: "WELCOME_MESSAGE",
+    RESET_ROOM: "RESET_ROOM",
   },
 };
 
@@ -57,12 +59,16 @@ function socket({ io }: { io: Server }) {
      */
     socket.on(
       EVENTS.CLIENT.SEND_ROOM_MESSAGE,
-      ({ roomId, message, username }) => {
+      ({ roomId, message, username }, done) => {
+        const messageId = Date.now() + "";
         const date = new Date();
+        const time = `${date.getHours()}:${date.getMinutes()}`;
+        done(time, messageId);
         socket.to(roomId).emit(EVENTS.SERVER.ROOMS_MESSAGE, {
           message,
           username,
-          time: `${date.getHours()}:${date.getMinutes()}`,
+          time,
+          messageId,
         });
       }
     );
@@ -72,12 +78,18 @@ function socket({ io }: { io: Server }) {
      */
     socket.on(
       EVENTS.CLIENT.JOIN_ROOM,
-      ({ key: roomId, roomname, username }) => {
+      ({ key: roomId, roomname, username, enter }) => {
         socket.join(roomId);
-        socket.to(roomId).emit(EVENTS.SERVER.WELCOME_MESSAGE, { username });
+        if (enter)
+          socket.to(roomId).emit(EVENTS.SERVER.WELCOME_MESSAGE, { username });
         socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, roomname });
       }
     );
+
+    socket.on(EVENTS.CLIENT.RESET_ROOM, (parseMessages, curRoomId) => {
+      socket.join(curRoomId);
+      socket.emit(EVENTS.SERVER.RESET_ROOM, parseMessages);
+    });
   });
 }
 

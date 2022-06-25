@@ -25,6 +25,7 @@ const Home: NextPage = () => {
 
   const onClickLogOut = () => {
     localStorage.removeItem("username");
+    localStorage.removeItem("curRoom");
     setRoomId(undefined);
     setUsername(undefined);
   };
@@ -39,8 +40,12 @@ const Home: NextPage = () => {
       const curRoomInfo = JSON.parse(curRoom);
       const roomId = curRoomInfo.roomId;
       const roomname = curRoomInfo.roomname;
-      setRoomId(roomId);
-      setRoomname(roomname);
+      socket.emit(EVENTS.CLIENT.JOIN_ROOM, {
+        key: roomId,
+        roomname,
+        username,
+        enter: false,
+      });
     }
   }, []);
 
