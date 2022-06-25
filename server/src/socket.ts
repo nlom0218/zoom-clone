@@ -12,6 +12,7 @@ const EVENTS = {
     ROOMS: "ROOMS",
     JOINED_ROOM: "JOINED_ROOM",
     ROOMS_MESSAGE: "ROOMS_MESSAGE",
+    WELCOME_MESSAGE: "WELCOME_MESSAGE",
   },
 };
 
@@ -26,9 +27,12 @@ function socket({ io }: { io: Server }) {
     /*
      *   When a user creates a new room
      */
-    socket.on(EVENTS.CLIENT.CREATE_ROOM, ({ roomname }) => {
+    socket.on(EVENTS.CLIENT.CREATE_ROOM, ({ roomname }, done) => {
       // create a roomId
       const roomId = nanoid();
+
+      // send roomId info to front-end
+      done(roomId, roomname);
 
       // add a new room to the rooms object
       rooms[roomId] = {
@@ -55,7 +59,6 @@ function socket({ io }: { io: Server }) {
       EVENTS.CLIENT.SEND_ROOM_MESSAGE,
       ({ roomId, message, username }) => {
         const date = new Date();
-
         socket.to(roomId).emit(EVENTS.SERVER.ROOMS_MESSAGE, {
           message,
           username,
@@ -67,10 +70,14 @@ function socket({ io }: { io: Server }) {
     /*
      *   When a user joins a room
      */
-    socket.on(EVENTS.CLIENT.JOIN_ROOM, ({ key: roomId, roomname }) => {
-      socket.join(roomId);
-      socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, roomname });
-    });
+    socket.on(
+      EVENTS.CLIENT.JOIN_ROOM,
+      ({ key: roomId, roomname, username }) => {
+        socket.join(roomId);
+        socket.to(roomId).emit(EVENTS.SERVER.WELCOME_MESSAGE, { username });
+        socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, roomname });
+      }
+    );
   });
 }
 

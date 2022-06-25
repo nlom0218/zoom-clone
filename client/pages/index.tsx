@@ -4,14 +4,16 @@ import RoomsContainer from "../containers/Rooms";
 import MessagesContainer from "../containers/Messages";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import EVENTS from "../config/events";
 
 interface IForm {
   username: string;
 }
 
 const Home: NextPage = () => {
-  const { socket, username, setUsername, roomId, setRoomId } = useSockets();
-  const { register, getValues, setValue, handleSubmit } = useForm<IForm>();
+  const { socket, username, setUsername, roomId, setRoomId, setRoomname } =
+    useSockets();
+  const { register, getValues, handleSubmit } = useForm<IForm>();
   const handleSetUsername = () => {
     const value = getValues("username");
     if (!value) {
@@ -29,7 +31,17 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const username = localStorage.getItem("username");
-    if (username) setUsername(username);
+    const curRoom = localStorage.getItem("curRoom");
+
+    if (username) setUsername(username); // 로컬에 유저이름이 있을 경우 해당 이름으로 로그인
+    if (curRoom) {
+      // 방에 입장한 상황에서 새로고침하면 나가지는 현상을 고침
+      const curRoomInfo = JSON.parse(curRoom);
+      const roomId = curRoomInfo.roomId;
+      const roomname = curRoomInfo.roomname;
+      setRoomId(roomId);
+      setRoomname(roomname);
+    }
   }, []);
 
   return (
