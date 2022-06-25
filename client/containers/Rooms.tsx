@@ -9,6 +9,7 @@ interface IForm {
 function RoomsContainer() {
   const { register, getValues, setValue } = useForm<IForm>();
   const { socket, roomId, rooms } = useSockets();
+  console.log(rooms);
 
   const handleCreateRoom = () => {
     // get the room name
@@ -21,6 +22,12 @@ function RoomsContainer() {
     // set room name input ot empty string
     setValue("roomname", "");
   };
+
+  function handleJoinRoom(key: string) {
+    if (key === roomId) return;
+    socket.emit(EVENTS.CLIENT.JOIN_ROOM, key);
+  }
+
   return (
     <nav>
       <div>
@@ -28,7 +35,17 @@ function RoomsContainer() {
         <button onClick={handleCreateRoom}>CREATE ROOM</button>
       </div>
       {Object.keys(rooms).map((key) => {
-        return <div key={key}>{rooms[key].name}</div>;
+        return (
+          <div key={key}>
+            <button
+              disabled={key === roomId}
+              title={`Join ${rooms[key].name}`}
+              onClick={() => handleJoinRoom(key)}
+            >
+              {rooms[key].name}
+            </button>
+          </div>
+        );
       })}
     </nav>
   );
