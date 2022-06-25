@@ -10,8 +10,8 @@ interface IForm {
 }
 
 const Home: NextPage = () => {
-  const { socket, username, setUsername } = useSockets();
-  const { register, getValues, setValue } = useForm<IForm>();
+  const { socket, username, setUsername, roomId, setRoomId } = useSockets();
+  const { register, getValues, setValue, handleSubmit } = useForm<IForm>();
   const handleSetUsername = () => {
     const value = getValues("username");
     if (!value) {
@@ -21,21 +21,36 @@ const Home: NextPage = () => {
     localStorage.setItem("username", value);
   };
 
+  const onClickLogOut = () => {
+    localStorage.removeItem("username");
+    setRoomId(undefined);
+    setUsername(undefined);
+  };
+
   useEffect(() => {
-    setValue("username", localStorage.getItem("username") || "");
+    const username = localStorage.getItem("username");
+    if (username) setUsername(username);
   }, []);
 
   return (
     <div>
       {!username && (
-        <div>
-          <input placeholder="Username" {...register("username")} />
-          <button onClick={handleSetUsername}>START</button>
-        </div>
+        <form onSubmit={handleSubmit(handleSetUsername)}>
+          <input
+            placeholder="Username"
+            {...register("username", {
+              required: true,
+            })}
+            autoComplete="off"
+          />
+          <input type="submit" value="LOG IN" />
+        </form>
       )}
       {username && (
         <>
-          <RoomsContainer />
+          <div>환영합니다 {username}님^^</div>
+          <button onClick={onClickLogOut}>로그아웃</button>
+          {!roomId && <RoomsContainer />}
           <MessagesContainer />
         </>
       )}

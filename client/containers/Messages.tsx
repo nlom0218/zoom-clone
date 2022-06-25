@@ -7,7 +7,7 @@ interface IForm {
 }
 
 function MessagesContainer() {
-  const { register, getValues, handleSubmit } = useForm<IForm>({
+  const { register, getValues, handleSubmit, setValue } = useForm<IForm>({
     mode: "onChange",
   });
   const { socket, messages, roomId, username, setMessages, roomname } =
@@ -19,8 +19,8 @@ function MessagesContainer() {
 
   const date = new Date();
 
-  const handleSendMessage = () => {
-    const message = getValues("message");
+  const handleSendMessage = (data: { message: string }) => {
+    const { message } = data;
     socket.emit(EVENTS.CLIENT.SEND_ROOM_MESSAGE, { roomId, message, username });
     setMessages((prev: IMessage) => {
       if (prev.length === 0) {
@@ -42,20 +42,24 @@ function MessagesContainer() {
         ];
       }
     });
+    setValue("message", "");
   };
 
   return (
     <div>
       <h3>Welcome {roomname}</h3>
-      {messages?.map(({ message }, index) => {
-        return <p key={index}>{message}</p>;
+      {messages?.map(({ message, username: msgOnwer }, index) => {
+        return (
+          <p key={index}>
+            {username === msgOnwer ? "me" : msgOnwer}:{message}
+          </p>
+        );
       })}
 
       <form onSubmit={handleSubmit(handleSendMessage)}>
-        <textarea
+        <input
           {...register("message")}
           placeholder="Tell us what you are thinking"
-          rows={1}
         />
         <input type="submit" value="SEND" />
       </form>

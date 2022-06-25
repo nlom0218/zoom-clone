@@ -7,12 +7,13 @@ interface IForm {
 }
 
 function RoomsContainer() {
-  const { register, getValues, setValue } = useForm<IForm>();
+  const { register, setValue, handleSubmit } = useForm<IForm>();
   const { socket, roomId, rooms } = useSockets();
+  console.log(roomId);
 
-  const handleCreateRoom = () => {
+  const handleCreateRoom = (data: { roomname: string }) => {
+    const { roomname } = data;
     // get the room name
-    const roomname = getValues("roomname");
     if (roomname === "") return;
 
     // emit room created event
@@ -31,10 +32,10 @@ function RoomsContainer() {
 
   return (
     <nav>
-      <div>
+      <form onSubmit={handleSubmit(handleCreateRoom)}>
         <input placeholder="Room name" {...register("roomname")} />
-        <button onClick={handleCreateRoom}>CREATE ROOM</button>
-      </div>
+        <input type="submit" value="CREATE ROOM" />
+      </form>
       {Object.keys(rooms).map((key) => {
         return (
           <div key={key}>

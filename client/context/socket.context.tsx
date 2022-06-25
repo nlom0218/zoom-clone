@@ -12,6 +12,7 @@ interface Context {
   messages?: IMessage;
   setMessages: Function;
   roomId?: string;
+  setRoomId: Function;
   rooms: {
     [index: string]: { name: string };
   };
@@ -28,14 +29,15 @@ const SocketContext = createContext<Context>({
   rooms: {},
   messages: [],
   setRoomname: () => false,
+  setRoomId: () => false,
 });
 
 function SocketsProvider(props: any) {
-  const [username, setUsername] = useState("");
-  const [roomId, setRoomId] = useState("");
+  const [username, setUsername] = useState<string | undefined>(undefined);
+  const [roomId, setRoomId] = useState<string | undefined>(undefined);
   const [rooms, setRooms] = useState({});
   const [messages, setMessages] = useState<IMessage>([]);
-  const [roomname, setRoomname] = useState("");
+  const [roomname, setRoomname] = useState<string | undefined>(undefined);
 
   socket.on(EVENTS.SERVER.ROOMS, (value) => {
     setRooms(value);
@@ -75,6 +77,7 @@ function SocketsProvider(props: any) {
         setUsername,
         rooms,
         roomId,
+        setRoomId,
         messages,
         setMessages,
         roomname,
