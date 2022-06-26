@@ -5,8 +5,10 @@ import SocketsProvider from "../context/socket.context";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SocketsProvider>
-      <div className=" max-w-5x mx-auto bg-center bg-cover w-full min-h-screen bg-gradient-to-br flex justify-center items-center bg-city px-3">
-        <Component {...pageProps} />
+      <div className=" bg-center bg-cover w-full min-h-screen bg-gradient-to-br bg-city">
+        <div className="bg-slate-900 min-h-screen bg-opacity-50 px-5 max-w-5xl mx-auto ">
+          <Component {...pageProps} />
+        </div>
       </div>
     </SocketsProvider>
   );

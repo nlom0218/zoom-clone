@@ -50,17 +50,35 @@ const Home: NextPage = () => {
   }, []);
 
   return (
-    <div>
+    <div className=" min-h-screen flex justify-center items-center">
       {!username && (
-        <form onSubmit={handleSubmit(handleSetUsername)}>
+        <form
+          onSubmit={handleSubmit(handleSetUsername)}
+          className="flex flex-col w-80 space-y-4"
+        >
+          <span
+            className="text-gray-100 text-center uppercase text-5xl mb-2 tracking-wider
+          font-bold
+          "
+          >
+            Nomad ChatRoom
+          </span>
           <input
             placeholder="Username"
             {...register("username", {
               required: true,
             })}
             autoComplete="off"
+            className=" px-4 py-2 w-full shadow-2xl rounded-lg placeholder:text-gray-400 text-gray-800
+             bg-slate-100 focus:outline-none
+            "
           />
-          <input type="submit" value="LOG IN" />
+          <input
+            className=" text-gray-800 cursor-pointer text-sm w-full font-semibold bg-teal-400
+             py-2 shadow-2xl rounded-lg hover:text-gray-100 hover:bg-teal-600 transition-colors duration-300"
+            type="submit"
+            value="LOG IN"
+          />
         </form>
       )}
       {username && (
