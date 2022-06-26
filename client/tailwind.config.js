@@ -8,7 +8,9 @@ module.exports = {
     "./components/**/*.{js.jsx,tx,tsx}",
   ],
   theme: {
-    extend: {},
+    backgroundImage: {
+      city: "url('../img/city1.jpg')",
+    },
   },
   darkMode: "class",
   // plugins: [require("@tailwindcss/forms")],

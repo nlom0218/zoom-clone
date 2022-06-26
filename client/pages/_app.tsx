@@ -5,7 +5,7 @@ import SocketsProvider from "../context/socket.context";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SocketsProvider>
-      <div className=" bg-slate-900">
+      <div className=" max-w-5x mx-auto bg-center bg-cover w-full min-h-screen bg-gradient-to-br flex justify-center items-center bg-city px-3">
         <Component {...pageProps} />
       </div>
     </SocketsProvider>

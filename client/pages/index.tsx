@@ -65,7 +65,7 @@ const Home: NextPage = () => {
       )}
       {username && (
         <>
-          <div className="bg-red-900">환영합니다 {username}님^^</div>
+          <div>환영합니다 {username}님^^</div>
           <button onClick={onClickLogOut}>로그아웃</button>
           {!roomId && <RoomsContainer />}
           {roomId && <MessagesContainer />}
