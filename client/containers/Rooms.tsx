@@ -48,7 +48,11 @@ function RoomsContainer() {
   return (
     <nav>
       <form onSubmit={handleSubmit(handleCreateRoom)}>
-        <input placeholder="Room name" {...register("roomname")} />
+        <input
+          placeholder="Room name"
+          {...register("roomname", { required: true })}
+          autoComplete="off"
+        />
         <input type="submit" value="CREATE ROOM" />
       </form>
       {Object.keys(rooms).map((key) => {

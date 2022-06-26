@@ -24,8 +24,7 @@ const Home: NextPage = () => {
   };
 
   const onClickLogOut = () => {
-    localStorage.removeItem("username");
-    localStorage.removeItem("curRoom");
+    localStorage.clear();
     setRoomId(undefined);
     setUsername(undefined);
   };
@@ -68,7 +67,7 @@ const Home: NextPage = () => {
           <div>환영합니다 {username}님^^</div>
           <button onClick={onClickLogOut}>로그아웃</button>
           {!roomId && <RoomsContainer />}
-          <MessagesContainer />
+          {roomId && <MessagesContainer />}
         </>
       )}
     </div>

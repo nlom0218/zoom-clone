@@ -80,6 +80,11 @@ function SocketsProvider(props: any) {
     setMessages(parsMessages);
   });
 
+  socket.on(EVENTS.SERVER.BYE_MESSAGE, ({ username }) => {
+    //   디자인 작업할 때 알람 메시지로 만들기
+    console.log(`${username}님이 퇴장함`);
+  });
+
   useEffect(() => {
     window.onfocus = function () {
       document.title = "Chap App";

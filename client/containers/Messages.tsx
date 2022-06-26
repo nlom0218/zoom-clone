@@ -13,8 +13,16 @@ function MessagesContainer() {
   const { register, getValues, handleSubmit, setValue } = useForm<IForm>({
     mode: "onChange",
   });
-  const { socket, messages, roomId, username, setMessages, roomname } =
-    useSockets();
+  const {
+    socket,
+    messages,
+    roomId,
+    username,
+    setMessages,
+    roomname,
+    setRoomId,
+    setRoomname,
+  } = useSockets();
 
   const handleSendMessage = (data: { message: string }) => {
     const { message } = data;
@@ -50,6 +58,19 @@ function MessagesContainer() {
     setValue("message", "");
   };
 
+  const onClickLeaveRoom = () => {
+    localStorage.removeItem("curRoom");
+    setRoomId(undefined);
+    setRoomname(undefined);
+    socket.emit(EVENTS.CLIENT.LEAVE_ROOM, { roomId, username });
+  };
+
+  const onClickRemoveAllMesg = () => {
+    if (!roomId) return;
+    localStorage.removeItem(roomId);
+    setMessages([]);
+  };
+
   useEffect(() => {
     const curRoom = localStorage.getItem("curRoom");
 
@@ -76,11 +97,14 @@ function MessagesContainer() {
 
       <form onSubmit={handleSubmit(handleSendMessage)}>
         <input
-          {...register("message")}
+          {...register("message", { required: true })}
           placeholder="Tell us what you are thinking"
+          autoComplete="off"
         />
         <input type="submit" value="SEND" />
       </form>
+      <button onClick={onClickLeaveRoom}>방 나가기</button>
+      <button onClick={onClickRemoveAllMesg}>메시지 전체 삭제</button>
     </div>
   );
 }

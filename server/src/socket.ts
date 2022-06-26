@@ -8,6 +8,7 @@ const EVENTS = {
     SEND_ROOM_MESSAGE: "SEND_ROOM_MESSAGE",
     JOIN_ROOM: "JOIN_ROOM",
     RESET_ROOM: "RESET_ROOM",
+    LEAVE_ROOM: "LEAVE_ROOM",
   },
   SERVER: {
     ROOMS: "ROOMS",
@@ -15,6 +16,7 @@ const EVENTS = {
     ROOMS_MESSAGE: "ROOMS_MESSAGE",
     WELCOME_MESSAGE: "WELCOME_MESSAGE",
     RESET_ROOM: "RESET_ROOM",
+    BYE_MESSAGE: "BYE_MESSAGE",
   },
 };
 
@@ -89,6 +91,16 @@ function socket({ io }: { io: Server }) {
     socket.on(EVENTS.CLIENT.RESET_ROOM, (parseMessages, curRoomId) => {
       socket.join(curRoomId);
       socket.emit(EVENTS.SERVER.RESET_ROOM, parseMessages);
+    });
+
+    /*
+     *   When a user leaves a room
+     */
+    socket.on(EVENTS.CLIENT.LEAVE_ROOM, ({ roomId, username }) => {
+      console.log(roomId, username);
+
+      socket.leave(roomId);
+      socket.to(roomId).emit(EVENTS.SERVER.BYE_MESSAGE, { username });
     });
   });
 }
