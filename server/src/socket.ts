@@ -135,6 +135,7 @@ function socket({ io }: { io: Server }) {
       const roomPassword = rooms[roomId].password;
       if (roomPassword === password) {
         // 채팅 종료
+        done(true);
 
         // 해당 아이디를 가진 room 제거
         delete rooms[roomId];
@@ -145,7 +146,7 @@ function socket({ io }: { io: Server }) {
         socket.emit(EVENTS.SERVER.DELETE_ROOM, { rooms, roomId });
       } else {
         // 비밀번호 확인 메시지 보내기
-        done();
+        done(false);
       }
     });
 
