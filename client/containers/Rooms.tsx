@@ -1,6 +1,6 @@
 import EVENTS from "../config/events";
 import { useSockets } from "../context/socket.context";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { enterRoom } from "../utils/local";
 
 interface IForm {
@@ -11,7 +11,8 @@ interface IForm {
 
 function RoomsContainer() {
   const { register, setValue, handleSubmit } = useForm<IForm>();
-  const { socket, roomId, rooms, username } = useSockets();
+  const { socket, roomId, rooms, username, setRoomId, setRoomname } =
+    useSockets();
 
   const handleCreateRoom = (data: IForm) => {
     const { roomname, password, code } = data;
@@ -46,8 +47,6 @@ function RoomsContainer() {
     // 로컬에 현재 접속 중인 room정보 저장
     enterRoom(key, roomname);
   }
-
-  console.log(rooms);
 
   return (
     <nav>

@@ -2,6 +2,10 @@ import { Server, Socket } from "socket.io";
 import { nanoid } from "nanoid";
 import { instrument } from "@socket.io/admin-ui";
 
+interface IRoom {
+  [index: string]: { name: string; password: string; code: number };
+}
+
 const EVENTS = {
   USER_NAME: "username",
   connection: "connection",
@@ -12,6 +16,8 @@ const EVENTS = {
     JOIN_ROOM: "JOIN_ROOM",
     RESET_ROOM: "RESET_ROOM",
     LEAVE_ROOM: "LEAVE_ROOM",
+    DELETE_ROOM: "DELETE_ROOM",
+    RELEASE_ROOM: "RELEASE_ROOM",
   },
   SERVER: {
     ROOMS: "ROOMS",
@@ -20,6 +26,7 @@ const EVENTS = {
     WELCOME_MESSAGE: "WELCOME_MESSAGE",
     RESET_ROOM: "RESET_ROOM",
     BYE_MESSAGE: "BYE_MESSAGE",
+    DELETE_ROOM: "DELETE_ROOM",
   },
 };
 
@@ -119,6 +126,34 @@ function socket({ io }: { io: Server }) {
     socket.on(EVENTS.CLIENT.LEAVE_ROOM, ({ roomId, username }) => {
       socket.leave(roomId);
       socket.to(roomId).emit(EVENTS.SERVER.BYE_MESSAGE, { username });
+    });
+
+    /*
+     *   When delete chat room
+     */
+    socket.on(EVENTS.CLIENT.DELETE_ROOM, ({ password, roomId }, done) => {
+      const roomPassword = rooms[roomId].password;
+      if (roomPassword === password) {
+        // 채팅 종료
+
+        // 해당 아이디를 가진 room 제거
+        delete rooms[roomId];
+
+        socket.leave(roomId);
+
+        socket.broadcast.emit(EVENTS.SERVER.DELETE_ROOM, { rooms, roomId });
+        socket.emit(EVENTS.SERVER.DELETE_ROOM, { rooms, roomId });
+      } else {
+        // 비밀번호 확인 메시지 보내기
+        done();
+      }
+    });
+
+    /*
+     *   When release chat room
+     */
+    socket.on(EVENTS.CLIENT.RELEASE_ROOM, ({ roomId }) => {
+      socket.leave(roomId);
     });
   });
 }

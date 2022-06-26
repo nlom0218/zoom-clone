@@ -21,6 +21,8 @@ interface Context {
   };
   roomname?: string;
   setRoomname: Function;
+  relaseRoom?: string;
+  setRelaseRoom: Function;
 }
 
 const socket = io(SOCKET_URL);
@@ -33,6 +35,7 @@ const SocketContext = createContext<Context>({
   messages: [],
   setRoomname: () => false,
   setRoomId: () => false,
+  setRelaseRoom: () => false,
 });
 
 function SocketsProvider(props: any) {
@@ -41,6 +44,7 @@ function SocketsProvider(props: any) {
   const [rooms, setRooms] = useState({});
   const [messages, setMessages] = useState<IMessage>([]);
   const [roomname, setRoomname] = useState<string | undefined>(undefined);
+  const [relaseRoom, setRelaseRoom] = useState<string | undefined>(undefined);
 
   socket.on(EVENTS.SERVER.ROOMS, (value) => {
     setRooms(value);
@@ -87,6 +91,11 @@ function SocketsProvider(props: any) {
     console.log(`${username}님이 퇴장함`);
   });
 
+  socket.on(EVENTS.SERVER.DELETE_ROOM, ({ rooms, roomId }) => {
+    setRooms(rooms);
+    setRelaseRoom(roomId);
+  });
+
   useEffect(() => {
     window.onfocus = function () {
       document.title = "Chap App";
@@ -106,6 +115,8 @@ function SocketsProvider(props: any) {
         setMessages,
         roomname,
         setRoomname,
+        relaseRoom,
+        setRelaseRoom,
       }}
       {...props}
     />

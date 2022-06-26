@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import EVENTS from "../config/events";
 import { IMessage, useSockets } from "../context/socket.context";
 import { saveMessage } from "../utils/local";
+import DeleteRoom from "./DeleteRoom";
 
 interface IForm {
   message: string;
@@ -11,7 +12,7 @@ interface IForm {
 
 function MessagesContainer() {
   const [thisRoomId, setThisRoomId] = useState<string>("");
-  const { register, getValues, handleSubmit, setValue } = useForm<IForm>({
+  const { register, handleSubmit, setValue } = useForm<IForm>({
     mode: "onChange",
   });
   const {
@@ -23,7 +24,8 @@ function MessagesContainer() {
     roomname,
     setRoomId,
     setRoomname,
-    rooms,
+    relaseRoom,
+    setRelaseRoom,
   } = useSockets();
 
   const handleSendMessage = (data: { message: string }) => {
@@ -91,6 +93,20 @@ function MessagesContainer() {
     socket.emit(EVENTS.CLIENT.RESET_ROOM, parseMessages, curRoomId);
   }, []);
 
+  useEffect(() => {
+    console.log(relaseRoom, roomId);
+    if (relaseRoom === roomId) {
+      console.log("채팅방이 종료되었습니다");
+      socket.emit(EVENTS.CLIENT.RELEASE_ROOM, { roomId });
+      if (!roomId) return;
+      localStorage.removeItem("curRoom");
+      localStorage.removeItem(roomId);
+      setRoomId(undefined);
+      setRoomname(undefined);
+      setRelaseRoom(undefined);
+    }
+  }, [relaseRoom]);
+
   return (
     <div>
       <h3>Welcome {roomname}</h3>
@@ -112,7 +128,7 @@ function MessagesContainer() {
       </form>
       <button onClick={onClickLeaveRoom}>방 나가기</button>
       <button onClick={onClickRemoveAllMesg}>메시지 전체 삭제</button>
-      {/* <span>{rooms[thisRoomId].owner === socket.id && "내가 주인임"}</span> */}
+      <DeleteRoom />
     </div>
   );
 }
