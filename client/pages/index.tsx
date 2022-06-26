@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useSockets } from "../context/socket.context";
-import RoomsContainer from "../containers/Rooms";
-import MessagesContainer from "../containers/Messages";
+import RoomsContainer from "../components/Rooms";
+import MessagesContainer from "../components/Messages";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import EVENTS from "../config/events";
@@ -65,7 +65,7 @@ const Home: NextPage = () => {
       )}
       {username && (
         <>
-          <div>환영합니다 {username}님^^</div>
+          <div className="bg-red-900">환영합니다 {username}님^^</div>
           <button onClick={onClickLogOut}>로그아웃</button>
           {!roomId && <RoomsContainer />}
           {roomId && <MessagesContainer />}

@@ -11,8 +11,7 @@ interface IForm {
 
 function RoomsContainer() {
   const { register, setValue, handleSubmit } = useForm<IForm>();
-  const { socket, roomId, rooms, username, setRoomId, setRoomname } =
-    useSockets();
+  const { socket, roomId, rooms, username } = useSockets();
 
   const handleCreateRoom = (data: IForm) => {
     const { roomname, password, code } = data;
