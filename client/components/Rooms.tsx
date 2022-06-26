@@ -48,7 +48,7 @@ function RoomsContainer() {
   }
 
   return (
-    <nav>
+    <div>
       <form onSubmit={handleSubmit(handleCreateRoom)}>
         <input
           placeholder="Room name"
@@ -98,7 +98,7 @@ function RoomsContainer() {
           </div>
         );
       })}
-    </nav>
+    </div>
   );
 }
 
