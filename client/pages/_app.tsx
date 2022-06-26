@@ -7,7 +7,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <SocketsProvider>
       <div className=" bg-center bg-cover relative w-full min-h-screen bg-gradient-to-br font-sans bg-city">
         <div className="bg-slate-900 w-full min-h-screen bg-opacity-50 ">
-          <Component {...pageProps} />
+          <div className=" absolute top-0 bottom-0 left-0 right-0">
+            <Component {...pageProps} />
+          </div>
           <div className=" fixed text-gray-100 bottom-1 left-2">
             Image from unsplash
           </div>
