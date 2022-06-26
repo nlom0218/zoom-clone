@@ -54,20 +54,22 @@ function SocketsProvider(props: any) {
 
   socket.on(
     EVENTS.SERVER.ROOMS_MESSAGE,
-    ({ message, username, time, messageId }) => {
+    ({ message, username, time, messageId, roomId: serverRoomId }) => {
       if (!document.hasFocus()) {
         document.title = "New message...";
       }
-      saveMessage(message, username, time, roomId, messageId);
-      setMessages([
-        ...messages,
-        {
-          message,
-          username,
-          time,
-          messageId,
-        },
-      ]);
+      saveMessage(message, username, time, serverRoomId, messageId);
+      if (serverRoomId === roomId) {
+        setMessages([
+          ...messages,
+          {
+            message,
+            username,
+            time,
+            messageId,
+          },
+        ]);
+      }
     }
   );
 

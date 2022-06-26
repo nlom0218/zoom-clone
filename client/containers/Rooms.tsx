@@ -45,6 +45,8 @@ function RoomsContainer() {
     enterRoom(key, roomname);
   }
 
+  console.log(rooms);
+
   return (
     <nav>
       <form onSubmit={handleSubmit(handleCreateRoom)}>

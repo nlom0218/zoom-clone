@@ -59,7 +59,11 @@ function MessagesContainer() {
   };
 
   const onClickLeaveRoom = () => {
+    // 방 나가기 전 알림창 띄우기
+
+    if (!roomId) return;
     localStorage.removeItem("curRoom");
+    localStorage.removeItem(roomId);
     setRoomId(undefined);
     setRoomname(undefined);
     socket.emit(EVENTS.CLIENT.LEAVE_ROOM, { roomId, username });

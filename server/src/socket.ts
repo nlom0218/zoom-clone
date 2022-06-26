@@ -71,6 +71,7 @@ function socket({ io }: { io: Server }) {
           username,
           time,
           messageId,
+          roomId,
         });
       }
     );
@@ -97,8 +98,6 @@ function socket({ io }: { io: Server }) {
      *   When a user leaves a room
      */
     socket.on(EVENTS.CLIENT.LEAVE_ROOM, ({ roomId, username }) => {
-      console.log(roomId, username);
-
       socket.leave(roomId);
       socket.to(roomId).emit(EVENTS.SERVER.BYE_MESSAGE, { username });
     });
