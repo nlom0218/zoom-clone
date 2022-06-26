@@ -69,8 +69,8 @@ const Home: NextPage = () => {
             "
           />
           <input
-            className=" text-gray-800 cursor-pointer text-sm w-full font-semibold bg-teal-400
-             py-2 shadow-2xl rounded-lg hover:text-gray-100 hover:bg-teal-600 transition-all duration-700
+            className=" text-gray-800 cursor-pointer text-sm w-full font-semibold bg-amber-400
+             py-2 shadow-2xl rounded-lg hover:text-gray-100 hover:bg-amber-600 transition-all duration-700
              
              "
             type="submit"

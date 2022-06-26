@@ -68,7 +68,7 @@ function CreateRoom() {
               className={cls(
                 "w-3 h-3 rounded-full border transition-all duration-700",
                 type === "Public"
-                  ? "bg-yellow-300 border-yellow-300"
+                  ? "bg-amber-300 border-amber-300"
                   : "border-gray-100"
               )}
             />
@@ -82,7 +82,7 @@ function CreateRoom() {
               className={cls(
                 "w-3 h-3 rounded-full border transition-all duration-700",
                 type === "Private"
-                  ? "bg-yellow-300 border-yellow-300"
+                  ? "bg-amber-300 border-amber-300"
                   : "border-gray-100"
               )}
             />
@@ -106,7 +106,7 @@ function CreateRoom() {
           bg-slate-100 focus:outline-none 
           "
           />
-          <span className="text-sm text-yellow-300 text-center">
+          <span className="text-sm text-amber-300 text-center">
             채팅방을 종료할 때 사용되는 비밀번호 입니다.
           </span>
         </div>
@@ -130,7 +130,7 @@ function CreateRoom() {
              bg-slate-100 focus:outline-none 
             "
             />
-            <span className="text-sm text-yellow-300 text-center">
+            <span className="text-sm text-amber-300 text-center">
               코드를 입력하고 입장합니다.
             </span>
           </div>
@@ -139,8 +139,8 @@ function CreateRoom() {
         <input
           type="submit"
           value="CREATE ROOM"
-          className=" text-gray-800 cursor-pointer text-sm w-full font-semibold bg-yellow-300
-             py-2 shadow-2xl rounded-lg hover:text-gray-100 hover:bg-yellow-500 transition-all duration-700
+          className=" text-gray-800 cursor-pointer text-sm w-full font-semibold bg-amber-300
+             py-2 shadow-2xl rounded-lg hover:text-gray-100 hover:bg-amber-500 transition-all duration-700
              
              "
         />
