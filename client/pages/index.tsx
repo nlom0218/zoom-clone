@@ -85,7 +85,7 @@ const Home: NextPage = () => {
             setRoomId={setRoomId}
             setUsername={setUsername}
           />
-          <main className="mt-16">
+          <main className="mt-12">
             {!roomId && <RoomsContainer />}
             {roomId && <MessagesContainer />}
           </main>

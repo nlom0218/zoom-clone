@@ -20,6 +20,13 @@ function RoomsContainer() {
 
   return (
     <div>
+      <span
+        className="text-gray-100 text-center uppercase text-2xl mb-2 tracking-wider
+          font-bold
+          "
+      >
+        Nomad ChatRoom LIST
+      </span>
       {Object.keys(rooms).map((key) => {
         return (
           <div key={key}>
@@ -35,11 +42,24 @@ function RoomsContainer() {
       })}
       <Link href={"/createroom"}>
         <a
-          className="fixed bottom-0 shadow-2xl right-0 m-10 w-16 h-16 bg-lime-300 text-gray-800 rounded-full flex justify-center 
-        items-center border-transparent text-3xl hover:bg-lime-600 hover:text-gray-100 transition duration-700 cursor-pointer
+          className="fixed bottom-0 shadow-2xl p-4 right-0 m-10 bg-lime-300 text-gray-800 rounded-full flex justify-center 
+        items-center border-transparent text-3xl hover:bg-lime-500 hover:text-gray-100 transition duration-1000 cursor-pointer hover:rotate-[360deg] 
         "
         >
-          +
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
         </a>
       </Link>
     </div>
