@@ -1,6 +1,7 @@
 const EVENTS = {
   connection: "connection",
   CLIENT: {
+    LOGIN_USER: "LOGIN_USER",
     CREATE_ROOM: "CREATE_ROOM",
     SEND_ROOM_MESSAGE: "SEND_ROOM_MESSAGE",
     JOIN_ROOM: "JOIN_ROOM",

@@ -10,6 +10,7 @@ interface IForm {
 }
 
 function MessagesContainer() {
+  const [thisRoomId, setThisRoomId] = useState<string>("");
   const { register, getValues, handleSubmit, setValue } = useForm<IForm>({
     mode: "onChange",
   });
@@ -22,6 +23,7 @@ function MessagesContainer() {
     roomname,
     setRoomId,
     setRoomname,
+    rooms,
   } = useSockets();
 
   const handleSendMessage = (data: { message: string }) => {
@@ -79,6 +81,7 @@ function MessagesContainer() {
     const curRoom = localStorage.getItem("curRoom");
 
     if (!curRoom) return;
+    setThisRoomId(curRoom);
 
     const curRoomId = JSON.parse(curRoom).roomId;
     const localMessages = localStorage.getItem(curRoomId);
@@ -109,6 +112,7 @@ function MessagesContainer() {
       </form>
       <button onClick={onClickLeaveRoom}>방 나가기</button>
       <button onClick={onClickRemoveAllMesg}>메시지 전체 삭제</button>
+      {/* <span>{rooms[thisRoomId].owner === socket.id && "내가 주인임"}</span> */}
     </div>
   );
 }

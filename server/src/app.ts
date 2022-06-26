@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import config from "config";
 import { version } from "../package.json";
 import socket from "./socket";
+import { instrument } from "@socket.io/admin-ui";
 
 const port = config.get<number>("port");
 const host = config.get<string>("host");
@@ -15,9 +16,12 @@ const httpSever = createServer(app);
 
 const io = new Server(httpSever, {
   cors: {
-    origin: corsOrigin,
+    origin: [corsOrigin, "https://admin.socket.io"],
     credentials: true,
   },
+});
+instrument(io, {
+  auth: false,
 });
 
 app.get("/", (_, res) =>

@@ -19,6 +19,7 @@ const Home: NextPage = () => {
     if (!value) {
       return;
     }
+    socket.emit(EVENTS.CLIENT.LOGIN_USER, { value });
     setUsername(value);
     localStorage.setItem("username", value);
   };

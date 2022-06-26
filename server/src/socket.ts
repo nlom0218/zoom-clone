@@ -1,9 +1,12 @@
 import { Server, Socket } from "socket.io";
 import { nanoid } from "nanoid";
+import { instrument } from "@socket.io/admin-ui";
 
 const EVENTS = {
+  USER_NAME: "username",
   connection: "connection",
   CLIENT: {
+    LOGIN_USER: "LOGIN_USER",
     CREATE_ROOM: "CREATE_ROOM",
     SEND_ROOM_MESSAGE: "SEND_ROOM_MESSAGE",
     JOIN_ROOM: "JOIN_ROOM",
@@ -20,41 +23,57 @@ const EVENTS = {
   },
 };
 
-const rooms: Record<string, { name: string }> = {};
+const rooms: Record<string, { name: string; password: string; code: number }> =
+  {};
 
 function socket({ io }: { io: Server }) {
   io.on(EVENTS.connection, (socket: Socket) => {
     // console.log(`User connected ${socket.id}`);
+    socket.onAny((event) => {
+      //   console.log(io.sockets.adapter);
+    });
 
     socket.emit(EVENTS.SERVER.ROOMS, rooms);
 
     /*
+     *   When a user login
+     */
+    // socket.on(EVENTS.CLIENT.LOGIN_USER, ({value}) => {
+
+    // });
+
+    /*
      *   When a user creates a new room
      */
-    socket.on(EVENTS.CLIENT.CREATE_ROOM, ({ roomname }, done) => {
-      // create a roomId
-      const roomId = nanoid();
+    socket.on(
+      EVENTS.CLIENT.CREATE_ROOM,
+      ({ roomname, password, code }, done) => {
+        // create a roomId
+        const roomId = nanoid();
 
-      // send roomId info to front-end
-      done(roomId, roomname);
+        // send roomId info to front-end
+        done(roomId, roomname);
 
-      // add a new room to the rooms object
-      rooms[roomId] = {
-        name: roomname,
-      };
+        // add a new room to the rooms object
+        rooms[roomId] = {
+          name: roomname,
+          password,
+          code,
+        };
 
-      // socket.join(roomId)
-      socket.join(roomId);
+        // socket.join(roomId)
+        socket.join(roomId);
 
-      // broadcast an event saying there is a new room
-      socket.broadcast.emit(EVENTS.SERVER.ROOMS, rooms);
+        // broadcast an event saying there is a new room
+        socket.broadcast.emit(EVENTS.SERVER.ROOMS, rooms);
 
-      // emit back to the room creator with all the rooms
-      socket.emit(EVENTS.SERVER.ROOMS, rooms);
+        // emit back to the room creator with all the rooms
+        socket.emit(EVENTS.SERVER.ROOMS, rooms);
 
-      // emit event back the room creator saying they have joined a room
-      socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, roomname });
-    });
+        // emit event back the room creator saying they have joined a room
+        socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, roomname });
+      }
+    );
 
     /*
      *   When a user sends a room message
