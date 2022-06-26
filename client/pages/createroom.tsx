@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import EVENTS from "../config/events";
 import { useSockets } from "../context/socket.context";
@@ -18,7 +18,7 @@ export const cls = (...classnames: string[]) => {
 function CreateRoom() {
   const router = useRouter();
   const { register, setValue, handleSubmit } = useForm<IForm>();
-  const { socket, roomId, rooms, username } = useSockets();
+  const { socket } = useSockets();
   const [type, setType] = useState<"Public" | "Private">("Public");
 
   const onClickTypeBtn = (type: "Public" | "Private") => {
@@ -45,6 +45,11 @@ function CreateRoom() {
     setValue("roomname", "");
     setValue("password", "");
   };
+
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (!username) router.push("/");
+  }, []);
 
   return (
     <div className="text-gray-100 min-h-screen max-w-5xl mx-auto overflow-auto p-10 flex items-center justify-center">
@@ -144,6 +149,15 @@ function CreateRoom() {
              
              "
         />
+        <div
+          onClick={() => router.push("/")}
+          className=" text-gray-800 cursor-pointer text-sm w-full font-semibold bg-red-300
+             py-2 shadow-2xl rounded-lg hover:text-gray-100 hover:bg-red-500 transition-all duration-700
+             text-center
+             "
+        >
+          CANCEL
+        </div>
       </form>
     </div>
   );
