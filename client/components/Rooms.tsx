@@ -1,3 +1,4 @@
+import Link from "next/link";
 import EVENTS from "../config/events";
 import { useSockets } from "../context/socket.context";
 import { enterRoom } from "../utils/local";
@@ -32,6 +33,15 @@ function RoomsContainer() {
           </div>
         );
       })}
+      <Link href={"/createroom"}>
+        <a
+          className="fixed bottom-0 shadow-2xl right-0 m-10 w-16 h-16 bg-lime-300 text-gray-800 rounded-full flex justify-center 
+        items-center border-transparent text-3xl hover:bg-lime-600 hover:text-gray-100 transition duration-700 cursor-pointer
+        "
+        >
+          +
+        </a>
+      </Link>
     </div>
   );
 }

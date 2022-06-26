@@ -32,7 +32,7 @@ function Nav({ username, setRoomId, setUsername }: IProps) {
       <button
         onClick={onClickLogOut}
         className="  cursor-pointer font-semibold p-2
-              shadow-2xl rounded-full text-gray-800 bg-yellow-300 transition-all duration-1000
+              shadow-2xl rounded-full text-gray-800 bg-amber-300 transition-all duration-1000
                hover:rotate-[360deg] 
              "
       >
