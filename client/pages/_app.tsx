@@ -7,7 +7,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <SocketsProvider>
       <div className=" bg-center bg-cover relative w-full min-h-screen bg-gradient-to-br font-sans bg-city">
         <div className="bg-slate-900 w-full min-h-screen bg-opacity-50 ">
-          <div className=" absolute top-0 bottom-0 left-0 right-0 overflow-scroll">
+          <div className=" absolute top-0 bottom-0 left-0 right-0 overflow-scroll mb-10">
             <Component {...pageProps} />
           </div>
           <div className=" fixed text-gray-100 bottom-1 left-2">

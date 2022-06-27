@@ -27,84 +27,22 @@ function RoomsContainer() {
       >
         Nomad ChatRoom LIST
       </span>
-      {Object.keys(rooms).map((key) => {
-        return (
-          <div key={key} className=" bg-slate-300 p-3 h-60">
-            <button
-              disabled={key === roomId}
-              title={`Join ${rooms[key].name}`}
+      <div className="mt-2 grid gap-3 grid-cols-2 md:grid-cols-4">
+        {Object.keys(rooms).map((key) => {
+          return (
+            <div
+              key={key}
               onClick={() => handleJoinRoom(key, rooms[key].name)}
+              className=" bg-slate-100 bg-opacity-40 p-3 h-40 rounded-md cursor-pointer duration-500
+              flex justify-center items-center hover:bg-opacity-80 hover:text-gray-800 transition-all
+              hover:font-semibold
+              "
             >
-              {rooms[key].name}
-            </button>
-          </div>
-        );
-      })}
-      {Object.keys(rooms).map((key) => {
-        return (
-          <div key={key} className=" bg-slate-300 p-3 h-60">
-            <button
-              disabled={key === roomId}
-              title={`Join ${rooms[key].name}`}
-              onClick={() => handleJoinRoom(key, rooms[key].name)}
-            >
-              {rooms[key].name}
-            </button>
-          </div>
-        );
-      })}
-      {Object.keys(rooms).map((key) => {
-        return (
-          <div key={key} className=" bg-slate-300 p-3 h-60">
-            <button
-              disabled={key === roomId}
-              title={`Join ${rooms[key].name}`}
-              onClick={() => handleJoinRoom(key, rooms[key].name)}
-            >
-              {rooms[key].name}
-            </button>
-          </div>
-        );
-      })}
-      {Object.keys(rooms).map((key) => {
-        return (
-          <div key={key} className=" bg-slate-300 p-3 h-60">
-            <button
-              disabled={key === roomId}
-              title={`Join ${rooms[key].name}`}
-              onClick={() => handleJoinRoom(key, rooms[key].name)}
-            >
-              {rooms[key].name}
-            </button>
-          </div>
-        );
-      })}
-      {Object.keys(rooms).map((key) => {
-        return (
-          <div key={key} className=" bg-slate-300 p-3 h-60">
-            <button
-              disabled={key === roomId}
-              title={`Join ${rooms[key].name}`}
-              onClick={() => handleJoinRoom(key, rooms[key].name)}
-            >
-              {rooms[key].name}
-            </button>
-          </div>
-        );
-      })}
-      {Object.keys(rooms).map((key) => {
-        return (
-          <div key={key} className=" bg-slate-300 p-3 h-60">
-            <button
-              disabled={key === roomId}
-              title={`Join ${rooms[key].name}`}
-              onClick={() => handleJoinRoom(key, rooms[key].name)}
-            >
-              {rooms[key].name}
-            </button>
-          </div>
-        );
-      })}
+              <div>{rooms[key].name}</div>
+            </div>
+          );
+        })}
+      </div>
       <Link href={"/createroom"}>
         <a
           className="fixed bottom-0 shadow-2xl p-4 right-0 m-10 bg-lime-300 text-gray-800 rounded-full flex justify-center 

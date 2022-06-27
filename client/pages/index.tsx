@@ -78,7 +78,7 @@ const Home: NextPage = () => {
         </form>
       )}
       {username && (
-        <div className="text-gray-100 min-h-screen max-h-screen  max-w-5xl mx-auto p-10">
+        <div className="text-gray-100 min-h-full  max-w-5xl mx-auto p-10">
           <Nav
             username={username}
             setRoomId={setRoomId}
