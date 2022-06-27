@@ -1,5 +1,4 @@
-import { time } from "console";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import EVENTS from "../config/events";
 import { IMessage, useSockets } from "../context/socket.context";
@@ -12,6 +11,7 @@ interface IForm {
 }
 
 function MessagesContainer() {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [thisRoomId, setThisRoomId] = useState<string>("");
   const [closeMode, setCloseMode] = useState(false);
   const { register, handleSubmit, setValue } = useForm<IForm>({
@@ -112,6 +112,16 @@ function MessagesContainer() {
     }
   }, [relaseRoom]);
 
+  useEffect(() => {
+    if (scrollRef) {
+      scrollRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
+    }
+  }, [messages]);
+
   return (
     <div
       className=" w-full mx-auto min-h-[520px] max-h-[520px]
@@ -138,7 +148,7 @@ function MessagesContainer() {
               <div>{username !== msgOnwer && msgOnwer}</div>
               <div className="flex items-end space-x-1">
                 {username === msgOnwer && (
-                  <div className=" text-xs">{time}</div>
+                  <div className=" text-xs text-gray-600">{time}</div>
                 )}
                 <span
                   className={cls(
@@ -151,12 +161,13 @@ function MessagesContainer() {
                   {message}
                 </span>
                 {username !== msgOnwer && (
-                  <div className=" text-xs">{time}</div>
+                  <div className=" text-xs text-gray-600">{time}</div>
                 )}
               </div>
             </div>
           );
         })}
+        <div ref={scrollRef} />
       </div>
       <div className="bg-slate-100 text-gray-700 flex justify-end space-x-2 p-2 border-t border-gray-300">
         <button onClick={onClickLeaveRoom}>
