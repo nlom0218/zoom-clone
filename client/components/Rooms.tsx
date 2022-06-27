@@ -19,7 +19,7 @@ function RoomsContainer() {
   }
 
   return (
-    <div className="">
+    <main className="mt-12 min-h-full">
       <span
         className="text-gray-100 text-center uppercase text-2xl mb-2 tracking-wider
           font-bold
@@ -65,7 +65,7 @@ function RoomsContainer() {
           </svg>
         </a>
       </Link>
-    </div>
+    </main>
   );
 }
 

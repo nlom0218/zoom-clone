@@ -13,6 +13,7 @@ module.exports = {
     },
     gridTemplateRows: {
       mainGrid: "auto 1fr auto",
+      chatGrid: "auto 1fr auto auto",
     },
   },
   darkMode: "class",

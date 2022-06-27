@@ -77,17 +77,24 @@ const Home: NextPage = () => {
           />
         </form>
       )}
-      {username && (
-        <div className="text-gray-100 min-h-full  max-w-5xl mx-auto p-10">
+      {username && !roomId && (
+        <div className="text-gray-100 min-h-full max-w-5xl mx-auto p-10">
           <Nav
             username={username}
             setRoomId={setRoomId}
             setUsername={setUsername}
           />
-          <main className="mt-12">
-            {!roomId && <RoomsContainer />}
-            {roomId && <MessagesContainer />}
-          </main>
+          <RoomsContainer />
+        </div>
+      )}
+      {username && roomId && (
+        <div className="text-gray-100 min-h-full sm:max-w-md max-w-xs transition-all duration-500 mx-auto flex items-center">
+          <Nav
+            username={username}
+            setRoomId={setRoomId}
+            setUsername={setUsername}
+          />
+          <MessagesContainer />
         </div>
       )}
     </>
