@@ -19,7 +19,7 @@ function RoomsContainer() {
   }
 
   return (
-    <div>
+    <div className="">
       <span
         className="text-gray-100 text-center uppercase text-2xl mb-2 tracking-wider
           font-bold
@@ -29,7 +29,72 @@ function RoomsContainer() {
       </span>
       {Object.keys(rooms).map((key) => {
         return (
-          <div key={key}>
+          <div key={key} className=" bg-slate-300 p-3 h-60">
+            <button
+              disabled={key === roomId}
+              title={`Join ${rooms[key].name}`}
+              onClick={() => handleJoinRoom(key, rooms[key].name)}
+            >
+              {rooms[key].name}
+            </button>
+          </div>
+        );
+      })}
+      {Object.keys(rooms).map((key) => {
+        return (
+          <div key={key} className=" bg-slate-300 p-3 h-60">
+            <button
+              disabled={key === roomId}
+              title={`Join ${rooms[key].name}`}
+              onClick={() => handleJoinRoom(key, rooms[key].name)}
+            >
+              {rooms[key].name}
+            </button>
+          </div>
+        );
+      })}
+      {Object.keys(rooms).map((key) => {
+        return (
+          <div key={key} className=" bg-slate-300 p-3 h-60">
+            <button
+              disabled={key === roomId}
+              title={`Join ${rooms[key].name}`}
+              onClick={() => handleJoinRoom(key, rooms[key].name)}
+            >
+              {rooms[key].name}
+            </button>
+          </div>
+        );
+      })}
+      {Object.keys(rooms).map((key) => {
+        return (
+          <div key={key} className=" bg-slate-300 p-3 h-60">
+            <button
+              disabled={key === roomId}
+              title={`Join ${rooms[key].name}`}
+              onClick={() => handleJoinRoom(key, rooms[key].name)}
+            >
+              {rooms[key].name}
+            </button>
+          </div>
+        );
+      })}
+      {Object.keys(rooms).map((key) => {
+        return (
+          <div key={key} className=" bg-slate-300 p-3 h-60">
+            <button
+              disabled={key === roomId}
+              title={`Join ${rooms[key].name}`}
+              onClick={() => handleJoinRoom(key, rooms[key].name)}
+            >
+              {rooms[key].name}
+            </button>
+          </div>
+        );
+      })}
+      {Object.keys(rooms).map((key) => {
+        return (
+          <div key={key} className=" bg-slate-300 p-3 h-60">
             <button
               disabled={key === roomId}
               title={`Join ${rooms[key].name}`}

@@ -71,7 +71,6 @@ const Home: NextPage = () => {
           <input
             className=" text-gray-800 cursor-pointer text-sm w-full font-semibold bg-amber-400
              py-2 shadow-2xl rounded-lg hover:text-gray-100 hover:bg-amber-600 transition-all duration-700
-             
              "
             type="submit"
             value="LOG IN"
@@ -79,7 +78,7 @@ const Home: NextPage = () => {
         </form>
       )}
       {username && (
-        <div className="text-gray-100 min-h-screen max-w-5xl mx-auto overflow-auto p-10">
+        <div className="text-gray-100 min-h-screen max-h-screen  max-w-5xl mx-auto p-10">
           <Nav
             username={username}
             setRoomId={setRoomId}
