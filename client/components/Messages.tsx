@@ -13,6 +13,7 @@ interface IForm {
 
 function MessagesContainer() {
   const [thisRoomId, setThisRoomId] = useState<string>("");
+  const [closeMode, setCloseMode] = useState(false);
   const { register, handleSubmit, setValue } = useForm<IForm>({
     mode: "onChange",
   });
@@ -28,6 +29,10 @@ function MessagesContainer() {
     relaseRoom,
     setRelaseRoom,
   } = useSockets();
+
+  const onCLickCloseMode = () => {
+    setCloseMode(true);
+  };
 
   const handleSendMessage = (data: { message: string }) => {
     const { message } = data;
@@ -186,7 +191,6 @@ function MessagesContainer() {
             />
           </svg>
         </button>
-        {/* <DeleteRoom /> */}
       </div>
       <form
         onSubmit={handleSubmit(handleSendMessage)}
@@ -219,6 +223,15 @@ function MessagesContainer() {
           </svg>
         </button>
       </form>
+      <div
+        onClick={onCLickCloseMode}
+        className="fixed right-5 bottom-5 bg-red-300 px-4 py-2 text-gray-800 rounded-lg font-bold
+        hover:bg-red-600 hover:text-gray-100 transition-all duration-700 cursor-pointer text-sm
+      "
+      >
+        CLOSE ROOM
+      </div>
+      {closeMode && <DeleteRoom setCloseMode={setCloseMode} />}
     </div>
   );
 }
