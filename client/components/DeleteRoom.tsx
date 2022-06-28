@@ -76,7 +76,7 @@ function DeleteRoom({ setCloseMode }: { setCloseMode: Function }) {
           />
           <input
             type="submit"
-            value="CLOSE ROOM"
+            value="DELETE ROOM"
             className=" bg-red-300 text-gray-800 font-bold py-1 rounded-md  hover:bg-red-600 hover:text-gray-100 transition-all duration-700 cursor-pointer"
           />
         </form>

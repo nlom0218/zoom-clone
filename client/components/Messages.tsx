@@ -101,7 +101,7 @@ function MessagesContainer() {
 
   useEffect(() => {
     if (relaseRoom === roomId) {
-      console.log("채팅방이 종료되었습니다");
+      window.alert("채팅방이 삭제되었습니다.");
       socket.emit(EVENTS.CLIENT.RELEASE_ROOM, { roomId });
       if (!roomId) return;
       localStorage.removeItem("curRoom");
@@ -137,7 +137,11 @@ function MessagesContainer() {
       </h3>
       <div className=" overflow-scroll bg-blue-100 bg-opacity-90 rounded-t-md space-y-2 p-4">
         {messages?.map(({ message, username: msgOnwer, time }, index) => {
-          return (
+          return time === "enter" || time === "exit" ? (
+            <div key={index} className=" text-gray-700 text-sm text-center">
+              {message}
+            </div>
+          ) : (
             <div
               key={index}
               className={cls(
@@ -240,7 +244,7 @@ function MessagesContainer() {
         hover:bg-red-600 hover:text-gray-100 transition-all duration-700 cursor-pointer text-sm
       "
       >
-        CLOSE ROOM
+        DELETE ROOM
       </div>
       {closeMode && <DeleteRoom setCloseMode={setCloseMode} />}
     </div>
