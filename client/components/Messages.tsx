@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import EVENTS from "../config/events";
 import { IMessage, useSockets } from "../context/socket.context";
-import { cls } from "../pages/createRoom";
+import { cls } from "../pages/createroom";
 import { saveMessage } from "../utils/local";
 import DeleteRoom from "./DeleteRoom";
 
@@ -167,7 +167,7 @@ function MessagesContainer() {
             </div>
           );
         })}
-        <div ref={scrollRef} />
+        <div ref={scrollRef} className="none" />
       </div>
       <div className="bg-slate-100 text-gray-700 flex justify-end space-x-2 p-2 border-t border-gray-300">
         <button onClick={onClickLeaveRoom}>

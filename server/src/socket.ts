@@ -108,9 +108,14 @@ function socket({ io }: { io: Server }) {
     socket.on(
       EVENTS.CLIENT.JOIN_ROOM,
       ({ key: roomId, roomname, username, enter }) => {
+        const messageId = Date.now() + "";
         socket.join(roomId);
         if (enter)
-          socket.to(roomId).emit(EVENTS.SERVER.WELCOME_MESSAGE, { username });
+          socket.to(roomId).emit(EVENTS.SERVER.WELCOME_MESSAGE, {
+            username,
+            roomId,
+            messageId,
+          });
         socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, roomname });
       }
     );
@@ -124,8 +129,11 @@ function socket({ io }: { io: Server }) {
      *   When a user leaves a room
      */
     socket.on(EVENTS.CLIENT.LEAVE_ROOM, ({ roomId, username }) => {
+      const messageId = Date.now() + "";
       socket.leave(roomId);
-      socket.to(roomId).emit(EVENTS.SERVER.BYE_MESSAGE, { username });
+      socket
+        .to(roomId)
+        .emit(EVENTS.SERVER.BYE_MESSAGE, { username, roomId, messageId });
     });
 
     /*

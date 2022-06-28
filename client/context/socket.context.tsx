@@ -77,19 +77,57 @@ function SocketsProvider(props: any) {
     }
   );
 
-  socket.on(EVENTS.SERVER.WELCOME_MESSAGE, ({ username }) => {
-    //   디자인 작업할 때 알람 메시지로 만들기
-    console.log(`${username}님이 입장함`);
-  });
+  socket.on(
+    EVENTS.SERVER.WELCOME_MESSAGE,
+    ({ username, roomId: serverRoomId, messageId }) => {
+      const message = `${username}님이 입장했습니다.`;
+      const time = "enter";
+
+      if (!document.hasFocus()) {
+        document.title = "New message...";
+      }
+      saveMessage(message, username, time, serverRoomId, messageId);
+      if (serverRoomId === roomId) {
+        setMessages([
+          ...messages,
+          {
+            message,
+            username,
+            time,
+            messageId,
+          },
+        ]);
+      }
+    }
+  );
 
   socket.on(EVENTS.SERVER.RESET_ROOM, (parsMessages) => {
     setMessages(parsMessages);
   });
 
-  socket.on(EVENTS.SERVER.BYE_MESSAGE, ({ username }) => {
-    //   디자인 작업할 때 알람 메시지로 만들기
-    console.log(`${username}님이 퇴장함`);
-  });
+  socket.on(
+    EVENTS.SERVER.BYE_MESSAGE,
+    ({ username, roomId: serverRoomId, messageId }) => {
+      const message = `${username}님이 퇴장했습니다.`;
+      const time = "exit";
+
+      if (!document.hasFocus()) {
+        document.title = "New message...";
+      }
+      saveMessage(message, username, time, serverRoomId, messageId);
+      if (serverRoomId === roomId) {
+        setMessages([
+          ...messages,
+          {
+            message,
+            username,
+            time,
+            messageId,
+          },
+        ]);
+      }
+    }
+  );
 
   socket.on(EVENTS.SERVER.DELETE_ROOM, ({ rooms, roomId }) => {
     setRooms(rooms);
