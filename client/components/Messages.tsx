@@ -4,15 +4,23 @@ import EVENTS from "../config/events";
 import { IMessage, useSockets } from "../context/socket.context";
 import { cls } from "../pages/createroom";
 import { saveMessage } from "../utils/local";
+import ConfirmCode from "./ConfirmCode";
 import DeleteRoom from "./DeleteRoom";
 
 interface IForm {
   message: string;
 }
 
+interface IRoom {
+  roomId: string;
+  roomname: string;
+  code: string;
+}
+
 function MessagesContainer() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [thisRoomId, setThisRoomId] = useState<string>("");
+  const [confirm, setConfirm] = useState(false);
+  const [thisRoom, setThisRoom] = useState<IRoom>();
   const [closeMode, setCloseMode] = useState(false);
   const { register, handleSubmit, setValue } = useForm<IForm>({
     mode: "onChange",
@@ -74,6 +82,7 @@ function MessagesContainer() {
     if (!roomId) return;
     localStorage.removeItem("curRoom");
     localStorage.removeItem(roomId);
+    localStorage.removeItem("confirm");
     setRoomId(undefined);
     setRoomname(undefined);
     socket.emit(EVENTS.CLIENT.LEAVE_ROOM, { roomId, username });
@@ -89,14 +98,27 @@ function MessagesContainer() {
     const curRoom = localStorage.getItem("curRoom");
 
     if (!curRoom) return;
-    setThisRoomId(curRoom);
-
+    const parseCurRoom = JSON.parse(curRoom);
+    setThisRoom(parseCurRoom);
     const curRoomId = JSON.parse(curRoom).roomId;
+    const curRoomCode = JSON.parse(curRoom).code;
+
+    if (curRoomCode === "undefined") {
+      setConfirm(true);
+    }
+
     const localMessages = localStorage.getItem(curRoomId);
     if (!localMessages) return;
 
     const parseMessages = JSON.parse(localMessages);
     socket.emit(EVENTS.CLIENT.RESET_ROOM, parseMessages, curRoomId);
+  }, []);
+
+  useEffect(() => {
+    const isConfirm = localStorage.getItem("confirm");
+    if (isConfirm) {
+      setConfirm(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -121,6 +143,10 @@ function MessagesContainer() {
       });
     }
   }, [messages]);
+
+  if (!confirm) {
+    return <ConfirmCode roomCode={thisRoom?.code} setConfirm={setConfirm} />;
+  }
 
   return (
     <div

@@ -36,7 +36,7 @@ function CreateRoom() {
       { roomname, password, code },
       (roomId: string, roomname: string) => {
         // 로컬에 현재 접속 중인 room정보 저장
-        enterRoom(roomId, roomname);
+        enterRoom(roomId, roomname, code);
       }
     );
     router.push("/");

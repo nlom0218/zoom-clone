@@ -6,7 +6,11 @@ import { enterRoom } from "../utils/local";
 function RoomsContainer() {
   const { socket, roomId, rooms, username } = useSockets();
 
-  function handleJoinRoom(key: string, roomname: string) {
+  function handleJoinRoom(
+    key: string,
+    roomname: string,
+    code: string | undefined
+  ) {
     if (key === roomId) return;
     socket.emit(EVENTS.CLIENT.JOIN_ROOM, {
       key,
@@ -15,9 +19,9 @@ function RoomsContainer() {
       enter: true,
     });
     // 로컬에 현재 접속 중인 room정보 저장
-    enterRoom(key, roomname);
+    enterRoom(key, roomname, code);
+    localStorage.removeItem(key);
   }
-  console.log(rooms);
 
   return (
     <main className="mt-12 min-h-full">
@@ -33,7 +37,9 @@ function RoomsContainer() {
           return (
             <div
               key={key}
-              onClick={() => handleJoinRoom(key, rooms[key].name)}
+              onClick={() =>
+                handleJoinRoom(key, rooms[key].name, rooms[key].code + "")
+              }
               className=" bg-slate-100 bg-opacity-40 p-3 h-40 rounded-md cursor-pointer duration-500
               flex flex-col space-y-2 justify-center items-center hover:bg-opacity-80 hover:text-gray-800 transition-all
               hover:font-semibold

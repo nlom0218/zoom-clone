@@ -1,8 +1,17 @@
 import { IMessage, useSockets } from "./../context/socket.context";
 
 export const logOut = () => {};
-export const enterRoom = (roomId: string, roomname: string) => {
-  localStorage.setItem("curRoom", JSON.stringify({ roomId, roomname }));
+export const enterRoom = (
+  roomId: string,
+  roomname: string,
+  code: string | undefined
+) => {
+  console.log(code);
+
+  localStorage.setItem(
+    "curRoom",
+    JSON.stringify({ roomId, roomname, code: code && code })
+  );
 };
 
 export const saveMessage = (
