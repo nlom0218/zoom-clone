@@ -17,7 +17,11 @@ interface Context {
   roomId?: string;
   setRoomId: Function;
   rooms: {
-    [index: string]: { name: string; password: string; code: number };
+    [index: string]: {
+      name: string;
+      password: string;
+      code: number | undefined;
+    };
   };
   roomname?: string;
   setRoomname: Function;

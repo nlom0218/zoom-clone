@@ -65,7 +65,7 @@ function socket({ io }: { io: Server }) {
         rooms[roomId] = {
           name: roomname,
           password,
-          code,
+          code: code ? code : undefined,
         };
 
         // socket.join(roomId)

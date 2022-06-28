@@ -17,6 +17,7 @@ function RoomsContainer() {
     // 로컬에 현재 접속 중인 room정보 저장
     enterRoom(key, roomname);
   }
+  console.log(rooms);
 
   return (
     <main className="mt-12 min-h-full">
@@ -34,11 +35,52 @@ function RoomsContainer() {
               key={key}
               onClick={() => handleJoinRoom(key, rooms[key].name)}
               className=" bg-slate-100 bg-opacity-40 p-3 h-40 rounded-md cursor-pointer duration-500
-              flex justify-center items-center hover:bg-opacity-80 hover:text-gray-800 transition-all
+              flex flex-col space-y-2 justify-center items-center hover:bg-opacity-80 hover:text-gray-800 transition-all
               hover:font-semibold
               "
             >
               <div>{rooms[key].name}</div>
+              <div>
+                <div className="flex items-center space-x-1 justify-center text-sm">
+                  {rooms[key].code ? (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                        />
+                      </svg>
+                      <span>Private</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
+                        />
+                      </svg>
+                      <span>Public</span>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           );
         })}
