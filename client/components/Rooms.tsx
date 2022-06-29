@@ -48,7 +48,7 @@ function RoomsContainer() {
               <div>{rooms[key].name}</div>
               <div>
                 <div className="flex items-center space-x-1 justify-center text-sm">
-                  {rooms[key].code ? (
+                  {rooms[key].code + "" !== "undefined" ? (
                     <>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

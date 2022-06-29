@@ -150,8 +150,8 @@ function MessagesContainer() {
 
   return (
     <div
-      className=" w-full mx-auto min-h-[620px] max-h-[620px]
-    grid grid-rows-chatGrid
+      className=" w-full mx-auto max-h-[80vh] min-h-[80vh]
+    grid grid-rows-chatGrid max-w-[320px]
     "
     >
       <h3
@@ -197,7 +197,7 @@ function MessagesContainer() {
             </div>
           );
         })}
-        <div ref={scrollRef} className="none" />
+        <div ref={scrollRef} className=" hidden" />
       </div>
       <div className="bg-slate-100 text-gray-700 flex justify-end space-x-2 p-2 border-t border-gray-300">
         <button onClick={onClickLeaveRoom}>
