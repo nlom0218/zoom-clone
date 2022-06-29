@@ -15,6 +15,11 @@ module.exports = {
       mainGrid: "auto 1fr auto",
       chatGrid: "auto 1fr auto auto",
     },
+    gridTemplateColumns: {
+      chatColGrid: "1fr 320px",
+      windowGrid: "1fr 1fr 1fr 1fr",
+      phoneGrid: "1fr 1fr",
+    },
   },
   darkMode: "class",
   // plugins: [require("@tailwindcss/forms")],

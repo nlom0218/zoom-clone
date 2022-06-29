@@ -150,7 +150,7 @@ function MessagesContainer() {
 
   return (
     <div
-      className=" w-full mx-auto min-h-[520px] max-h-[520px]
+      className=" w-full mx-auto min-h-[620px] max-h-[620px]
     grid grid-rows-chatGrid
     "
     >

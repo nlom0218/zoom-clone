@@ -31,7 +31,11 @@ function CreateRoom() {
   const handleCreateRoom = (data: IForm) => {
     const { roomname, password, code1, code2, code3, code4, code5, code6 } =
       data;
-    const code = code1 + code2 + code3 + code4 + code5 + code6;
+
+    const code =
+      type === "Public"
+        ? "undefined"
+        : code1 + code2 + code3 + code4 + code5 + code6;
     // emit room created event
     // emit 메서드의 arg에는 fd에서 실행될 함수를 넣을 넣을 수 있다. 단, 마지막 arg이여야 한다.
     // 이때 bd에서는 해당 함수를 실행할 권한을 부여한다.
