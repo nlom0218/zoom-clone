@@ -8,7 +8,7 @@ import { enterRoom } from "../utils/local";
 interface IForm {
   roomname: string;
   password: string;
-  code: string;
+  [key: string]: string;
 }
 
 export const cls = (...classnames: string[]) => {
@@ -17,7 +17,9 @@ export const cls = (...classnames: string[]) => {
 
 function CreateRoom() {
   const router = useRouter();
-  const { register, setValue, handleSubmit } = useForm<IForm>();
+  const { register, setValue, handleSubmit, getValues, watch } =
+    useForm<IForm>();
+
   const { socket } = useSockets();
   const [type, setType] = useState<"Public" | "Private">("Public");
 
@@ -26,8 +28,9 @@ function CreateRoom() {
   };
 
   const handleCreateRoom = (data: IForm) => {
-    const { roomname, password, code } = data;
-    console.log(roomname, password, code);
+    const { roomname, password, code1, code2, code3, code4, code5, code6 } =
+      data;
+    const code = code1 + code2 + code3 + code4 + code5 + code6;
     // emit room created event
     // emit 메서드의 arg에는 fd에서 실행될 함수를 넣을 넣을 수 있다. 단, 마지막 arg이여야 한다.
     // 이때 bd에서는 해당 함수를 실행할 권한을 부여한다.
@@ -46,10 +49,47 @@ function CreateRoom() {
     setValue("password", "");
   };
 
+  const codePlaceHolder = (item: string) => {
+    if (item === "1") {
+      return "6";
+    } else if (item === "2") {
+      return "-";
+    } else if (item === "3") {
+      return "C";
+    } else if (item === "4") {
+      return "O";
+    } else if (item === "5") {
+      return "D";
+    } else if (item === "6") {
+      return "E";
+    }
+  };
+
   useEffect(() => {
     const username = localStorage.getItem("username");
     if (!username) router.push("/");
   }, []);
+
+  useEffect(() => {
+    if (!watch("code1") || watch("code1") === "") return;
+    document.getElementById(`code2`)?.focus();
+  }, [watch("code1")]);
+  useEffect(() => {
+    if (!watch("code2") || watch("code2") === "") return;
+    document.getElementById(`code3`)?.focus();
+  }, [watch("code2")]);
+  useEffect(() => {
+    if (!watch("code3") || watch("code3") === "") return;
+    document.getElementById(`code4`)?.focus();
+  }, [watch("code3")]);
+  useEffect(() => {
+    if (!watch("code4") || watch("code4") === "") return;
+    document.getElementById(`code5`)?.focus();
+  }, [watch("code4")]);
+  useEffect(() => {
+    if (!watch("code2") || watch("code2") === "") return;
+    document.getElementById(`code6`)?.focus();
+  }, [watch("code5")]);
 
   return (
     <div className="text-gray-100 min-h-screen max-w-5xl mx-auto overflow-auto p-10 flex items-center justify-center">
@@ -115,26 +155,30 @@ function CreateRoom() {
             채팅방을 종료할 때 사용되는 비밀번호 입니다.
           </span>
         </div>
-        {type === "Private" && (
+        {type !== "Private" && (
           <div className="w-full flex flex-col justify-start space-y-1">
-            <input
-              placeholder="Room code 6 Number"
-              {...register("code", {
-                minLength: {
-                  value: 6,
-                  message: "놉!!!",
-                },
-                maxLength: {
-                  value: 6,
-                  message: "놉!!!",
-                },
-              })}
-              autoComplete="off"
-              type="number"
-              className=" px-4 py-2 w-full shadow-2xl rounded-lg placeholder:text-gray-400 text-gray-800
-             bg-slate-100 focus:outline-none 
-            "
-            />
+            <div className="w-full flex space-x-2">
+              {["1", "2", "3", "4", "5", "6"].map((item) => (
+                <input
+                  key={item}
+                  placeholder={codePlaceHolder(item)}
+                  {...register(`code${item}`, {
+                    required: true,
+                    onChange: () => {
+                      document.getElementById(`code${item + 1}`)?.focus();
+                    },
+                  })}
+                  minLength={1}
+                  maxLength={1}
+                  id={`code${item}`}
+                  autoComplete="off"
+                  type="text"
+                  className=" px-4 py-2 w-full shadow-2xl rounded-lg placeholder:text-gray-400 text-gray-800
+              bg-slate-100 focus:outline-none text-center
+              "
+                />
+              ))}
+            </div>
             <span className="text-sm text-amber-300 text-center">
               코드를 입력하고 입장합니다.
             </span>

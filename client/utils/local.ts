@@ -6,8 +6,6 @@ export const enterRoom = (
   roomname: string,
   code: string | undefined
 ) => {
-  console.log(code);
-
   localStorage.setItem(
     "curRoom",
     JSON.stringify({ roomId, roomname, code: code && code })
