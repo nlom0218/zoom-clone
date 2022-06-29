@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import EVENTS from "../config/events";
 import { useSockets } from "../context/socket.context";
+import codePlaceHolder from "../utils/codePlaceHolder";
 import { enterRoom } from "../utils/local";
 
 interface IForm {
@@ -47,22 +48,6 @@ function CreateRoom() {
     // set room name input ot empty string
     setValue("roomname", "");
     setValue("password", "");
-  };
-
-  const codePlaceHolder = (item: string) => {
-    if (item === "1") {
-      return "6";
-    } else if (item === "2") {
-      return "-";
-    } else if (item === "3") {
-      return "C";
-    } else if (item === "4") {
-      return "O";
-    } else if (item === "5") {
-      return "D";
-    } else if (item === "6") {
-      return "E";
-    }
   };
 
   useEffect(() => {
@@ -155,7 +140,7 @@ function CreateRoom() {
             채팅방을 종료할 때 사용되는 비밀번호 입니다.
           </span>
         </div>
-        {type !== "Private" && (
+        {type === "Private" && (
           <div className="w-full flex flex-col justify-start space-y-1">
             <div className="w-full flex space-x-2">
               {["1", "2", "3", "4", "5", "6"].map((item) => (
