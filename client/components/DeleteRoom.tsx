@@ -72,12 +72,12 @@ function DeleteRoom({ setCloseMode }: { setCloseMode: Function }) {
             autoComplete="off"
             type="text"
             placeholder="Write room password"
-            className=" px-4 py-1 rounded-md outline-none text-gray-800"
+            className=" px-4 py-2 rounded-md outline-none text-gray-800"
           />
           <input
             type="submit"
             value="DELETE ROOM"
-            className=" bg-red-300 text-gray-800 font-bold py-1 rounded-md  hover:bg-red-600 hover:text-gray-100 transition-all duration-700 cursor-pointer"
+            className=" bg-red-300 text-gray-800 font-bold py-2 rounded-md  hover:bg-red-600 hover:text-gray-100 transition-all duration-700 cursor-pointer"
           />
         </form>
         {msg && <div className=" text-red-500 font-bold">Wrong password</div>}

@@ -197,7 +197,7 @@ function MessagesContainer() {
             </div>
           );
         })}
-        <div ref={scrollRef} className=" hidden" />
+        <div ref={scrollRef} className="none" />
       </div>
       <div className="bg-slate-100 text-gray-700 flex justify-end space-x-2 p-2 border-t border-gray-300">
         <button onClick={onClickLeaveRoom}>
