@@ -50,7 +50,7 @@ function ConfirmCode({ roomCode, setConfirm }: IProps) {
     document.getElementById(`code6`)?.focus();
   }, [watch("code5")]);
   return (
-    <div className="w-full mx-auto space-y-2 flex flex-col items-center w-80">
+    <div className=" mx-auto space-y-2 flex flex-col items-center w-80">
       <div className="text-center text-lg">
         A code is required to enter the room
       </div>

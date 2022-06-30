@@ -19,6 +19,7 @@ module.exports = {
       chatColGrid: "1fr 320px",
       windowGrid: "1fr 1fr 1fr 1fr",
       phoneGrid: "1fr 1fr",
+      roomGrid: "1fr auto",
     },
   },
   darkMode: "class",
