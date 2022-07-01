@@ -1,29 +1,49 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+
+type GetMedia = (deviceId?: string) => void;
+
+interface DeviceInfo {
+  deviceId: string;
+  kind: string;
+  label: string;
+}
 
 const Video = () => {
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
   const [myFace, setMyFace] = useState<any>();
   const [myStream, setMyStream] = useState<MediaStream>();
+  const [myCameras, setMyCameras] = useState<DeviceInfo[]>();
 
   const getCameras = async () => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const cameras = devices.filter((device) => device.kind === "videoinput");
-      console.log(cameras);
+      const mics = devices.filter((device) => device.kind === "audioinput");
+      const audios = devices.filter((device) => device.kind === "audiooutput");
+      setMyCameras(cameras);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const GetMedia = async () => {
+  const GetMedia: GetMedia = async (deviceId) => {
+    const initialConstraints = {
+      audio: false,
+      video: true,
+    };
+    const cameraConstraints = {
+      audio: true,
+      video: { deviceId: { exact: deviceId } },
+    };
     try {
-      const newMyStream = await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: true,
-      });
+      const newMyStream = await navigator.mediaDevices.getUserMedia(
+        deviceId ? cameraConstraints : initialConstraints
+      );
+      if (!deviceId) {
+        await getCameras();
+      }
       setMyStream(newMyStream);
-      getCameras();
     } catch (error) {
       console.log(error);
     }
@@ -45,6 +65,10 @@ const Video = () => {
         .forEach((track) => (track.enabled = !track.enabled));
     }
     setCameraOff((prev) => !prev);
+  };
+
+  const onChangeMyCamera = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    await e.target.value;
   };
 
   useEffect(() => {
@@ -141,7 +165,29 @@ const Video = () => {
           </svg>
         )}
       </button>
-      <select></select>
+      <select onInput={onChangeMyCamera}>
+        {myCameras?.map((item) => {
+          return <option key={item.deviceId}>{item.label}</option>;
+        })}
+      </select>
+      {/* <select onChange={onChangeMyAudios}>
+        {myAudios?.map((item) => {
+          return (
+            <option key={item.deviceId} value={item.deviceId}>
+              {item.label}
+            </option>
+          );
+        })}
+      </select>
+      <select onChange={onChangeMyMic}>
+        {myMics?.map((item) => {
+          return (
+            <option key={item.deviceId} value={item.deviceId}>
+              {item.label}
+            </option>
+          );
+        })}
+      </select> */}
     </div>
   );
 };
