@@ -1,29 +1,65 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Video = () => {
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
-  let myStream;
+  const [myFace, setMyFace] = useState<any>();
+  const [myStream, setMyStream] = useState<MediaStream>();
 
-  async function GetMedia() {
+  const getCameras = async () => {
     try {
-      myStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-      console.log(myStream);
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter((device) => device.kind === "videoinput");
+      console.log(cameras);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const onClickMute = () => setMuted((prev) => !prev);
+  const GetMedia = async () => {
+    try {
+      const newMyStream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: true,
+      });
+      setMyStream(newMyStream);
+      getCameras();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const onClickCamera = () => setCameraOff((prev) => !prev);
+  const onClickMute = () => {
+    if (myStream) {
+      myStream
+        .getAudioTracks()
+        .forEach((track) => (track.enabled = !track.enabled));
+      setMuted((prev) => !prev);
+    }
+  };
+
+  const onClickCamera = () => {
+    if (myStream) {
+      myStream
+        .getVideoTracks()
+        .forEach((track) => (track.enabled = !track.enabled));
+    }
+    setCameraOff((prev) => !prev);
+  };
 
   useEffect(() => {
     GetMedia();
+    const newMyFace = document.getElementById("myFace");
+
+    setMyFace(newMyFace);
   }, []);
+
+  useEffect(() => {
+    if (myStream) {
+      if (!myFace) return;
+      myFace.srcObject = myStream;
+    }
+  }, [myStream]);
 
   return (
     <div>
@@ -32,7 +68,7 @@ const Video = () => {
         className=" w-full h-full"
         autoPlay={true}
         playsInline={true}
-      ></video>
+      />
       <button onClick={onClickMute}>
         {muted ? (
           <svg
@@ -105,6 +141,7 @@ const Video = () => {
           </svg>
         )}
       </button>
+      <select></select>
     </div>
   );
 };
