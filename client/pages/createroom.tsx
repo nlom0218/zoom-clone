@@ -140,7 +140,7 @@ function CreateRoom() {
           bg-slate-100 focus:outline-none 
           "
           />
-          <span className="text-sm text-amber-300 text-center">
+          <span className="text-sm text-gray-100 text-center">
             채팅방을 종료할 때 사용되는 비밀번호 입니다.
           </span>
         </div>
@@ -168,7 +168,7 @@ function CreateRoom() {
                 />
               ))}
             </div>
-            <span className="text-sm text-amber-300 text-center">
+            <span className="text-sm text-gray-100 text-center">
               코드를 입력하고 입장합니다.
             </span>
           </div>

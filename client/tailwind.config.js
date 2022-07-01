@@ -15,7 +15,7 @@ module.exports = {
     },
     gridTemplateRows: {
       mainGrid: "auto 1fr auto",
-      chatGrid: "auto 1fr auto auto",
+      chatGrid: "1fr auto auto",
     },
     gridTemplateColumns: {
       chatColGrid: "1fr 320px",

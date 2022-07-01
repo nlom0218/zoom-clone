@@ -25,11 +25,7 @@ function RoomsContainer() {
 
   return (
     <main className="mt-12 min-h-full">
-      <span
-        className="text-gray-100 text-center uppercase text-2xl mb-2 tracking-wider
-          font-bold
-          "
-      >
+      <span className="text-slate-700 text-3xl font-extrabold text-center uppercase mb-2 tracking-wider">
         Nomad ChatRoom LIST
       </span>
       <div className="mt-2 grid gap-3 grid-cols-phoneGrid sm:grid-cols-windowGrid">
@@ -40,10 +36,9 @@ function RoomsContainer() {
               onClick={() =>
                 handleJoinRoom(key, rooms[key].name, rooms[key].code + "")
               }
-              className=" bg-slate-100 bg-opacity-40 p-3 h-40 rounded-md cursor-pointer duration-500
-              flex flex-col space-y-2 justify-center items-center hover:bg-opacity-80 hover:text-gray-800 transition-all
-              hover:font-semibold
-              "
+              className=" bg-slate-100 bg-opacity-50 text-gray-600 p-3 h-40 rounded-md cursor-pointer duration-500
+              flex flex-col space-y-2 justify-center items-center hover:bg-opacity-90 hover:text-gray-900 transition-all
+                "
             >
               <div>{rooms[key].name}</div>
               <div>

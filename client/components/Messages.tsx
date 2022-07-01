@@ -150,20 +150,20 @@ function MessagesContainer() {
   }
 
   return (
-    <div className="w-full grid grid-cols-roomGrid">
+    <div className="w-full grid grid-cols-roomGrid p-2">
+      <h3
+        className="text-slate-700 text-3xl font-extrabold mb-2 tracking-wider
+          col-span-full
+          "
+      >
+        {roomname} ROOM
+      </h3>
       <Video />
       <div
         className=" w-full mx-auto max-h-[80vh] min-h-[80vh]
-    grid grid-rows-chatGrid max-w-[320px] min-w-[320px]
+    grid grid-rows-chatGrid max-w-[320px] min-w-[320px] p-2
     "
       >
-        <h3
-          className="text-gray-100 text-2xl mb-2 tracking-wider
-          font-bold
-          "
-        >
-          WELCOME {roomname}
-        </h3>
         <div className=" overflow-scroll bg-blue-100 bg-opacity-90 rounded-t-md space-y-2 p-4">
           {messages?.map(({ message, username: msgOnwer, time }, index) => {
             return time === "enter" || time === "exit" ? (
