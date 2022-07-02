@@ -1,6 +1,5 @@
 import { Server, Socket } from "socket.io";
 import { nanoid } from "nanoid";
-import { instrument } from "@socket.io/admin-ui";
 
 interface IRoom {
   [index: string]: { name: string; password: string; code: number };
@@ -18,6 +17,7 @@ const EVENTS = {
     LEAVE_ROOM: "LEAVE_ROOM",
     DELETE_ROOM: "DELETE_ROOM",
     RELEASE_ROOM: "RELEASE_ROOM",
+    SEND_OFFER: "SEND_OFFER",
   },
   SERVER: {
     ROOMS: "ROOMS",
@@ -27,6 +27,8 @@ const EVENTS = {
     RESET_ROOM: "RESET_ROOM",
     BYE_MESSAGE: "BYE_MESSAGE",
     DELETE_ROOM: "DELETE_ROOM",
+    CONNECT_PEER: "CONNECT_PEER",
+    SEND_OFFER: "SEND_OFFER",
   },
 };
 
@@ -117,6 +119,11 @@ function socket({ io }: { io: Server }) {
             messageId,
           });
         socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, roomname });
+
+        // to connect peer
+        socket
+          .to(roomId)
+          .emit(EVENTS.SERVER.CONNECT_PEER, { roomId, roomname });
       }
     );
 
@@ -163,6 +170,17 @@ function socket({ io }: { io: Server }) {
      */
     socket.on(EVENTS.CLIENT.RELEASE_ROOM, ({ roomId }) => {
       socket.leave(roomId);
+    });
+
+    /*
+     * received offer
+     */
+    socket.on(EVENTS.CLIENT.SEND_OFFER, ({ offer, roomId, roomname }) => {
+      console.log("I recevied offer!!!!");
+
+      socket
+        .to(roomId)
+        .emit(EVENTS.SERVER.SEND_OFFER, { offer, roomId, roomname });
     });
   });
 }

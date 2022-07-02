@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import EVENTS from "../config/events";
+import { useSockets } from "../context/socket.context";
 
 type GetMedia = (deviceId?: string) => void;
 
@@ -9,12 +11,14 @@ interface DeviceInfo {
 }
 
 const Video = () => {
+  const { socket } = useSockets();
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
   const [isHover, setIsHover] = useState(false);
   const [myFace, setMyFace] = useState<any>();
   const [myStream, setMyStream] = useState<MediaStream>();
   const [myCameras, setMyCameras] = useState<DeviceInfo[]>();
+  const [peerConnection, setPeerConnection] = useState<RTCPeerConnection>();
 
   const getCameras = async () => {
     try {
@@ -48,6 +52,15 @@ const Video = () => {
     }
   };
 
+  function makeConnection() {
+    const myPeerConnection = new RTCPeerConnection();
+    setPeerConnection(myPeerConnection);
+    if (!myStream) return;
+    myStream
+      .getTracks()
+      .forEach((track) => myPeerConnection.addTrack(track, myStream));
+  }
+
   const onClickMute = () => {
     if (myStream) {
       myStream
@@ -71,7 +84,11 @@ const Video = () => {
   };
 
   useEffect(() => {
-    GetMedia();
+    const awaitFn = async () => {
+      GetMedia();
+    };
+    awaitFn();
+    makeConnection();
     const newMyFace = document.getElementById("myFace");
 
     setMyFace(newMyFace);
@@ -83,6 +100,15 @@ const Video = () => {
       myFace.srcObject = myStream;
     }
   }, [myStream]);
+
+  // socket
+  socket.on(EVENTS.SERVER.CONNECT_PEER, async ({ roomId, roomname }) => {
+    if (!peerConnection) return;
+    const offer = await peerConnection.createOffer();
+    peerConnection.setLocalDescription(offer);
+    console.log("sent the offer");
+    socket.emit(EVENTS.CLIENT.SEND_OFFER, { offer, roomId, roomname });
+  });
 
   return (
     <div className="p-2 self-start">
