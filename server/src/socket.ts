@@ -17,7 +17,9 @@ const EVENTS = {
     LEAVE_ROOM: "LEAVE_ROOM",
     DELETE_ROOM: "DELETE_ROOM",
     RELEASE_ROOM: "RELEASE_ROOM",
+    CONNECT_PEER: "CONNECT_PEER",
     SEND_OFFER: "SEND_OFFER",
+    SEND_ANSWER: "SEND_ANSWER",
   },
   SERVER: {
     ROOMS: "ROOMS",
@@ -29,6 +31,7 @@ const EVENTS = {
     DELETE_ROOM: "DELETE_ROOM",
     CONNECT_PEER: "CONNECT_PEER",
     SEND_OFFER: "SEND_OFFER",
+    SEND_ANSWER: "SEND_ANSWER",
   },
 };
 
@@ -119,11 +122,6 @@ function socket({ io }: { io: Server }) {
             messageId,
           });
         socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, roomname });
-
-        // to connect peer
-        socket
-          .to(roomId)
-          .emit(EVENTS.SERVER.CONNECT_PEER, { roomId, roomname });
       }
     );
 
@@ -173,14 +171,25 @@ function socket({ io }: { io: Server }) {
     });
 
     /*
+     * connected peer
+     */
+    socket.on(EVENTS.CLIENT.CONNECT_PEER, ({ roomId }) => {
+      // to connect peer
+      socket.to(roomId).emit(EVENTS.SERVER.CONNECT_PEER, { roomId });
+    });
+
+    /*
      * received offer
      */
-    socket.on(EVENTS.CLIENT.SEND_OFFER, ({ offer, roomId, roomname }) => {
-      console.log("I recevied offer!!!!");
+    socket.on(EVENTS.CLIENT.SEND_OFFER, ({ offer, roomId }) => {
+      socket.to(roomId).emit(EVENTS.SERVER.SEND_OFFER, { offer, roomId });
+    });
 
-      socket
-        .to(roomId)
-        .emit(EVENTS.SERVER.SEND_OFFER, { offer, roomId, roomname });
+    /*
+     * received answer
+     */
+    socket.on(EVENTS.CLIENT.SEND_ANSWER, ({ answer, roomId }) => {
+      socket.to(roomId).emit(EVENTS.SERVER.SEND_ANSWER, { answer, roomId });
     });
   });
 }

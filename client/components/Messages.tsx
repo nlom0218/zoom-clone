@@ -158,7 +158,7 @@ function MessagesContainer() {
       >
         {roomname} ROOM
       </h3>
-      <Video />
+      <Video roomId={roomId} />
       <div
         className=" w-full mx-auto max-h-[80vh] min-h-[80vh]
     grid grid-rows-chatGrid max-w-[320px] min-w-[320px] p-2

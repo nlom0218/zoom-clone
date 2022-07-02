@@ -10,7 +10,7 @@ interface DeviceInfo {
   label: string;
 }
 
-const Video = () => {
+const Video = ({ roomId }: { roomId: string | undefined }) => {
   const { socket } = useSockets();
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
@@ -32,9 +32,10 @@ const Video = () => {
 
   const GetMedia: GetMedia = async (deviceId) => {
     const initialConstraints = {
-      audio: false,
+      audio: true,
       video: true,
     };
+
     const cameraConstraints = {
       audio: true,
       video: { deviceId: { exact: deviceId } },
@@ -52,14 +53,14 @@ const Video = () => {
     }
   };
 
-  function makeConnection() {
+  const makeConnection = async () => {
     const myPeerConnection = new RTCPeerConnection();
     setPeerConnection(myPeerConnection);
     if (!myStream) return;
     myStream
       .getTracks()
       .forEach((track) => myPeerConnection.addTrack(track, myStream));
-  }
+  };
 
   const onClickMute = () => {
     if (myStream) {
@@ -85,13 +86,14 @@ const Video = () => {
 
   useEffect(() => {
     const awaitFn = async () => {
-      GetMedia();
+      await GetMedia();
+      await makeConnection();
     };
     awaitFn();
-    makeConnection();
     const newMyFace = document.getElementById("myFace");
-
     setMyFace(newMyFace);
+
+    socket.emit(EVENTS.CLIENT.CONNECT_PEER, { roomId });
   }, []);
 
   useEffect(() => {
@@ -102,12 +104,24 @@ const Video = () => {
   }, [myStream]);
 
   // socket
-  socket.on(EVENTS.SERVER.CONNECT_PEER, async ({ roomId, roomname }) => {
+  socket.on(EVENTS.SERVER.CONNECT_PEER, async ({ roomId }) => {
     if (!peerConnection) return;
     const offer = await peerConnection.createOffer();
     peerConnection.setLocalDescription(offer);
-    console.log("sent the offer");
-    socket.emit(EVENTS.CLIENT.SEND_OFFER, { offer, roomId, roomname });
+    socket.emit(EVENTS.CLIENT.SEND_OFFER, { offer, roomId });
+  });
+
+  socket.on(EVENTS.SERVER.SEND_OFFER, async ({ offer, roomId }) => {
+    if (!peerConnection) return;
+    peerConnection.setRemoteDescription(offer);
+    const answer = await peerConnection.createAnswer();
+    peerConnection.setLocalDescription(answer);
+    socket.emit("answer", answer, roomId);
+  });
+
+  socket.on(EVENTS.SERVER.SEND_ANSWER, ({ answer }) => {
+    if (!peerConnection) return;
+    peerConnection.setRemoteDescription(answer);
   });
 
   return (
