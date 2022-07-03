@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EVENTS from "../config/events";
 import { useSockets } from "../context/socket.context";
-
-type GetMedia = (deviceId?: string) => void;
+import * as webRTC from "../utils/webRTC.js";
 
 interface DeviceInfo {
   deviceId: string;
@@ -11,56 +10,43 @@ interface DeviceInfo {
 }
 
 const Video = ({ roomId }: { roomId: string | undefined }) => {
-  const { socket } = useSockets();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { socket, peerConnection, setPeerConnection, setConnected, roomname } =
+    useSockets();
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
   const [isHover, setIsHover] = useState(false);
-  const [myFace, setMyFace] = useState<any>();
-  const [myStream, setMyStream] = useState<MediaStream>();
   const [myCameras, setMyCameras] = useState<DeviceInfo[]>();
-  const [peerConnection, setPeerConnection] = useState<RTCPeerConnection>();
+  const [myStream, setMyStream] = useState<MediaStream>();
 
-  const getCameras = async () => {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = devices.filter((device) => device.kind === "videoinput");
-      setMyCameras(cameras);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   //   console.log(peerConnection);
 
-  const GetMedia: GetMedia = async (deviceId) => {
-    const initialConstraints = {
-      audio: true,
-      video: true,
-    };
+  //   //   let myStream: MediaStream;
+  //   //   let peerConnection: RTCPeerConnection;
 
-    const cameraConstraints = {
-      audio: true,
-      video: { deviceId: { exact: deviceId } },
-    };
-    try {
-      const newMyStream = await navigator.mediaDevices.getUserMedia(
-        deviceId ? cameraConstraints : initialConstraints
-      );
-      if (!deviceId) {
-        await getCameras();
-      }
-      setMyStream(newMyStream);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   const getCameras = async () => {
+  //     try {
+  //       const devices = await navigator.mediaDevices.enumerateDevices();
+  //       const cameras = devices.filter((device) => device.kind === "videoinput");
+  //       setMyCameras(cameras);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-  const makeConnection = async () => {
-    const myPeerConnection = new RTCPeerConnection();
-    setPeerConnection(myPeerConnection);
-    if (!myStream) return;
-    myStream
-      .getTracks()
-      .forEach((track) => myPeerConnection.addTrack(track, myStream));
-  };
+  //   const handleIcecandidate = (data: any) => {
+  //     // console.log(data);
+  //   };
+
+  //   const makeConnection = () => {
+  //     const newPeerConnection = new RTCPeerConnection();
+  //     setPeerConnection(newPeerConnection);
+
+  //     // if (peerConnection) {
+  //     //   console.log(peerConnection);
+  //     //   peerConnection.addEventListener("icecandidate", handleIcecandidate);
+  //     // }
+  //   };
 
   const onClickMute = () => {
     if (myStream) {
@@ -84,45 +70,58 @@ const Video = ({ roomId }: { roomId: string | undefined }) => {
     await e.target.value;
   };
 
-  useEffect(() => {
-    const awaitFn = async () => {
-      await GetMedia();
-      await makeConnection();
-    };
-    awaitFn();
-    const newMyFace = document.getElementById("myFace");
-    setMyFace(newMyFace);
+  //   const getMedia = async (deviceId?: string) => {
+  //     const initialConstraints = {
+  //       audio: true,
+  //       video: true,
+  //     };
 
-    socket.emit(EVENTS.CLIENT.CONNECT_PEER, { roomId });
-  }, []);
+  //     const cameraConstraints = {
+  //       audio: true,
+  //       video: { deviceId: { exact: deviceId } },
+  //     };
+  //     try {
+  //       const newMyStream = await navigator.mediaDevices.getUserMedia(
+  //         deviceId ? cameraConstraints : initialConstraints
+  //       );
+  //       if (!deviceId) {
+  //         await getCameras();
+  //       }
+  //       setMyStream(newMyStream);
+
+  //       makeConnection();
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   useEffect(() => {
+  //     (async () => {
+  //       await getMedia();
+  //     })();
+  //   }, []);
 
   useEffect(() => {
-    if (myStream) {
-      if (!myFace) return;
-      myFace.srcObject = myStream;
+    if (videoRef.current && myStream) {
+      videoRef.current.srcObject = myStream;
     }
   }, [myStream]);
 
-  // socket
-  socket.on(EVENTS.SERVER.CONNECT_PEER, async ({ roomId }) => {
-    if (!peerConnection) return;
-    const offer = await peerConnection.createOffer();
-    peerConnection.setLocalDescription(offer);
-    socket.emit(EVENTS.CLIENT.SEND_OFFER, { offer, roomId });
-  });
+  //   useEffect(() => {
+  //     if (peerConnection && myStream) {
+  //       myStream
+  //         .getTracks()
+  //         .forEach((track) => peerConnection.addTrack(track, myStream));
+  //     }
+  //   }, [peerConnection, myStream]);
 
-  socket.on(EVENTS.SERVER.SEND_OFFER, async ({ offer, roomId }) => {
-    if (!peerConnection) return;
-    peerConnection.setRemoteDescription(offer);
-    const answer = await peerConnection.createAnswer();
-    peerConnection.setLocalDescription(answer);
-    socket.emit("answer", answer, roomId);
-  });
+  //   useEffect(() => {
+  //     if (peerConnection) {
+  //       console.log("peerConnection");
 
-  socket.on(EVENTS.SERVER.SEND_ANSWER, ({ answer }) => {
-    if (!peerConnection) return;
-    peerConnection.setRemoteDescription(answer);
-  });
+  //       socket.emit(EVENTS.CLIENT.CONNECT_PEER, { roomId });
+  //     }
+  //   }, [peerConnection]);
 
   return (
     <div className="p-2 self-start">
@@ -136,6 +135,7 @@ const Video = ({ roomId }: { roomId: string | undefined }) => {
           className=" w-full h-full border border-transparent rounded-lg"
           autoPlay={true}
           playsInline={true}
+          ref={videoRef}
         />
         {isHover && (
           <div
@@ -228,6 +228,7 @@ const Video = ({ roomId }: { roomId: string | undefined }) => {
           </div>
         )}
       </div>
+      <script src="../utils/webRTC.js" />
     </div>
   );
 };

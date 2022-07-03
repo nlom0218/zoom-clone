@@ -27,6 +27,9 @@ interface Context {
   setRoomname: Function;
   relaseRoom?: string;
   setRelaseRoom: Function;
+  peerConnection: RTCPeerConnection | undefined;
+  setPeerConnection: Function;
+  setConnected: Function;
 }
 
 const socket = io(SOCKET_URL);
@@ -40,6 +43,9 @@ const SocketContext = createContext<Context>({
   setRoomname: () => false,
   setRoomId: () => false,
   setRelaseRoom: () => false,
+  setPeerConnection: () => false,
+  peerConnection: undefined,
+  setConnected: () => false,
 });
 
 function SocketsProvider(props: any) {
@@ -49,6 +55,10 @@ function SocketsProvider(props: any) {
   const [messages, setMessages] = useState<IMessage>([]);
   const [roomname, setRoomname] = useState<string | undefined>(undefined);
   const [relaseRoom, setRelaseRoom] = useState<string | undefined>(undefined);
+  const [peerConnection, setPeerConnection] = useState<
+    RTCPeerConnection | undefined
+  >(undefined);
+  const [connected, setConnected] = useState<number>(1);
 
   socket.on(EVENTS.SERVER.ROOMS, (value) => {
     setRooms(value);
@@ -138,6 +148,56 @@ function SocketsProvider(props: any) {
     setRelaseRoom(roomId);
   });
 
+  // useEffect(() => {
+  //   // socket
+  socket.on(EVENTS.SERVER.CONNECT_PEER, async ({ roomId }) => {
+    console.log("is connected");
+    console.log(peerConnection);
+
+    if (!peerConnection) return;
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(
+      offer,
+      () => {
+        console.log("send offer");
+        socket.emit(EVENTS.CLIENT.SEND_OFFER, { offer, roomId });
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  });
+
+  socket.on(EVENTS.SERVER.SEND_OFFER, async ({ offer, roomId }) => {
+    if (!peerConnection) return;
+    console.log("recived offer");
+    peerConnection.setRemoteDescription(offer);
+    const answer = await peerConnection.createAnswer();
+    await peerConnection
+      .setLocalDescription(answer)
+      .then(() => {
+        console.log("send answer");
+        socket.emit("answer", answer, roomname);
+      })
+      .catch((err) => console.log(err));
+    //   answer,
+    //   () => {
+    //     console.log("send answer");
+    //     socket.emit("answer", answer, roomname);
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   }
+    // );
+  });
+
+  // socket.on(EVENTS.SERVER.SEND_ANSWER, ({ answer }) => {
+  //   if (!peerConnection) return;
+  //   console.log("recived offer");
+  //   peerConnection.setRemoteDescription(answer);
+  // });
+  // }, [connected]);
+
   useEffect(() => {
     window.onfocus = function () {
       document.title = "Chap App";
@@ -159,6 +219,9 @@ function SocketsProvider(props: any) {
         setRoomname,
         relaseRoom,
         setRelaseRoom,
+        peerConnection,
+        setPeerConnection,
+        setConnected,
       }}
       {...props}
     />

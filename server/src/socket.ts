@@ -166,8 +166,8 @@ function socket({ io }: { io: Server }) {
     /*
      *   When release chat room
      */
-    socket.on(EVENTS.CLIENT.RELEASE_ROOM, ({ roomId }) => {
-      socket.leave(roomId);
+    socket.on(EVENTS.CLIENT.RELEASE_ROOM, ({ roomname }) => {
+      socket.leave(roomname);
     });
 
     /*
